@@ -1,4 +1,5 @@
 # alpha-badger
 one-trick-badger app for resizing video
 
-start with `npm run develop`
+build and watch changes: `npm run develop`
+start electron app with debug in prt 5858: `npm run start:debug`

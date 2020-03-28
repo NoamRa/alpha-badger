@@ -1,8 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom";
 
-import Root from "./components/Root";
-
-const App = () => <Root />;
+import App from "./components/App";
 
 ReactDOM.render(<App />, document.getElementById("alpha-badger-app"));
