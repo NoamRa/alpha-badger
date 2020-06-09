@@ -14,7 +14,7 @@ function App() {
     if (files.length === 0) return "";
     return (
       <ul>
-        {files.map(({ path: filePath }) => (
+        {files.map(({ path: filePath }: any) => (
           <>
             <li>{calcNewPath(filePath)}</li>
             {doAlpha && <li>{calcNewPath(filePath, true)}</li>}

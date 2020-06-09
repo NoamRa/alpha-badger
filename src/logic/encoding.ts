@@ -1,21 +1,20 @@
 import path from "path";
-import ffmpegStaticElectron from "ffmpeg-static-electron";
 import ffmpeg from "fluent-ffmpeg";
-import electron from "electron";
 
-const app = electron.remote.app;
+// import electron from "electron";
+// import ffmpegStaticElectron from "ffmpeg-static-electron";
+// const app = electron.remote.app;
+// const p = path;
+// const ffse = ffmpegStaticElectron;
+// export const ffmpegPath = p.join(
+//   app.getAppPath(),
+//   "..",
+//   "node_modules",
+//   "ffmpeg-static-electron",
+//   ffse.path
+// );
 
-const p = path;
-const ffse = ffmpegStaticElectron;
-export const ffmpegPath = p.join(
-  app.getAppPath(),
-  "..",
-  "node_modules",
-  "ffmpeg-static-electron",
-  ffse.path
-);
-
-ffmpeg.setFfmpegPath(ffmpegPath);
+// ffmpeg.setFfmpegPath("ffmpeg.exe");
 
 type AnyFn = (...args: any) => any;
 
