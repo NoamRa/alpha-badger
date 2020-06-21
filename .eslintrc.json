@@ -5,7 +5,7 @@
     "node": true
   },
   "parser": "@typescript-eslint/parser",
-  "plugins": ["prettier"],
+  "plugins": ["@typescript-eslint", "prettier"],
   "extends": [
     "eslint:recommended",
     "plugin:@typescript-eslint/eslint-recommended",
@@ -16,13 +16,5 @@
   ],
   "rules": {
     "prettier/prettier": "error"
-  },
-  "overrides": [
-    {
-      "files": ["*.js"],
-      "rules": {
-        "@typescript-eslint/no-var-requires": "off"
-      }
-    }
-  ]
+  }
 }

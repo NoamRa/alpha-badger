@@ -1,5 +1,6 @@
+import * as path from "path";
+import * as fs from "fs-extra";
 import { app, BrowserWindow } from "electron";
-declare const MAIN_WINDOW_WEBPACK_ENTRY: string;
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require("electron-squirrel-startup")) {
@@ -10,14 +11,35 @@ if (require("electron-squirrel-startup")) {
 const createWindow = (): void => {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
+    webPreferences: {
+      preload: path.join(__dirname, "../main/preload.js"),
+
+      // region security
+      nodeIntegration: false,
+      nodeIntegrationInWorker: false,
+      enableRemoteModule: false,
+      contextIsolation: true,
+      // endregion
+    },
+    show: false,
     height: 600,
     width: 800,
   });
 
-  // and load the index.html of the app.
-  mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
+  mainWindow.on("ready-to-show", () => {
+    mainWindow.show();
+    mainWindow.focus();
+  });
 
-  // Open the DevTools.
+  ["index.html", "index.css"].forEach((file: string) => {
+    const src = path.join(__dirname, "../../src/renderer/" + file);
+    const dist = path.join(__dirname, "../renderer/" + file);
+    fs.copyFileSync(src, dist);
+  });
+
+  // and load the index.html of the app.
+  mainWindow.loadFile(path.join(__dirname, "../renderer/index.html"));
+
   mainWindow.webContents.openDevTools();
 };
 

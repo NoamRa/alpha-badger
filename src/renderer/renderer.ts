@@ -28,6 +28,28 @@
 
 import "./index.css";
 
+// import el from "electron";
+// const x = el;
+
+// const { dialog } = require("electron").remote;
+
+// export function getFilesToRender(): void {
+//   const files = dialog.showOpenDialog({
+//     properties: ["openFile"],
+//     title: "Add to render queue",
+//     // filters: [{ name: "video files", extensions: ["mov"] }],// should be passed by template
+//   });
+
+//   if (!files) return;
+
+//   console.log(files);
+// }
+
+const openAndToRenderButton = document.getElementById("render");
+openAndToRenderButton.addEventListener("click", () => {
+  alert("choose file");
+});
+
 console.log(
   '👋 This message is being logged by "renderer.js", included via webpack',
 );
