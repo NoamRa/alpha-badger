@@ -5,7 +5,8 @@
   "description": "Alpha Badger",
   "main": "dist/main/index.js",
   "scripts": {
-    "start": "concurrently \"tsc -w \" \"electron-forge start\"",
+    "start": "tsc && electron-forge start",
+    "develop": "concurrently \"tsc -w \" \"electron-forge start\"",
     "package": "electron-forge package",
     "make": "electron-forge make",
     "publish": "electron-forge publish",

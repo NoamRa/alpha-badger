@@ -1,6 +1,7 @@
 import * as path from "path";
 import * as fs from "fs-extra";
-import { app, BrowserWindow } from "electron";
+import { app, BrowserWindow, ipcMain } from "electron";
+import { executeFfmpegCommand, Progress } from "./ffmpeg";
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require("electron-squirrel-startup")) {
@@ -8,11 +9,14 @@ if (require("electron-squirrel-startup")) {
   app.quit();
 }
 
+let mainWindow: BrowserWindow;
+
 const createWindow = (): void => {
   // Create the browser window.
-  const mainWindow = new BrowserWindow({
+  const preload: string = path.join(__dirname, "../main/preload.js");
+  mainWindow = new BrowserWindow({
     webPreferences: {
-      preload: path.join(__dirname, "../main/preload.js"),
+      preload,
 
       // region security
       nodeIntegration: false,
@@ -40,6 +44,7 @@ const createWindow = (): void => {
   // and load the index.html of the app.
   mainWindow.loadFile(path.join(__dirname, "../renderer/index.html"));
 
+  // TODO only on dev mode
   mainWindow.webContents.openDevTools();
 };
 
@@ -67,3 +72,23 @@ app.on("activate", () => {
 
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and import them here.
+
+// TODO move to preload
+ipcMain.handle("command", async (event, commandArguments: string) => {
+  const options = {
+    handleError: (error: string) => {
+      mainWindow.webContents.send("ffmpeg-error", JSON.stringify(error));
+    },
+    handleStart: (commandLine: string) => {
+      mainWindow.webContents.send("ffmpeg-start", JSON.stringify(commandLine));
+    },
+    handleProgress: (progress: Progress) => {
+      mainWindow.webContents.send("ffmpeg-progress", JSON.stringify(progress));
+    },
+    handleCodecData: (data: unknown) => {
+      mainWindow.webContents.send("ffmpeg-codecData", JSON.stringify(data));
+    },
+  };
+  console.log("about to executeFfmpegCommand");
+  executeFfmpegCommand(commandArguments, options);
+});
