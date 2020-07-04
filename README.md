@@ -28,8 +28,9 @@ Feel free to [open an issue](https://github.com/NoamRa/alpha-badger/issues/new) 
 ## Todo
 
 - [ ] Finish MVP API - a use should be able to select file, click render and see when render ends
-- [ ] Block pushing to main branch + run checks before merge to main
+- [ ] Block pushing to main branch + run checks before merge to main (CI)
 - [ ] Modular UI
+- [ ] CD - Build app on merge to main
 - [ ] UI component library for easy consumption
 - [ ] Examples
 - [ ] Add tests
