@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <!-- meta CSP content - "script-src 'self'" allows
+         running both inline scripts and load local js files, 
+         eg <script src="myScript.js"></script>
+    -->
+    <meta http-equiv="Content-Security-Policy" content="script-src 'self'" />
+    <link rel="stylesheet" href="./index.css" />
+    <title>Alpha Badger</title>
+  </head>
+  <body>
+    <div>
+      <div>
+        <button id="filePicker">choose file(s)</button>
+        <button id="clearFiles">clear file list</button>
+      </div>
+      <ol id="files"></ol>
+    </div>
+    <div>
+      <button id="render">render</button>
+    </div>
+    <div>
+      <span id="progress"></span>
+    </div>
+  </body>
+  <script src="renderer.js"></script>
+</html>

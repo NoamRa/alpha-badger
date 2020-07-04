@@ -1,58 +1,81 @@
 {
   "name": "alpha-badger",
+  "productName": "alpha-badger",
   "version": "1.0.0",
-  "description": "one-trick-badger app for resizing video",
-  "author": "NoamR",
-  "main": "dist/electron.js",
+  "description": "Alpha Badger",
+  "main": "dist/main/index.js",
   "scripts": {
-    "build": "webpack --config ./webpack.config.js",
-    "develop": "webpack --config ./webpack.config.js --watch",
-    "start": "electron ./dist/electron.js",
-    "start:debug": "electron --inspect=5858 ./dist/electron.js",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "pack": "electron-builder --dir",
-    "dist": "electron-builder"
+    "start": "tsc && electron-forge start",
+    "develop": "concurrently \"tsc -w \" \"electron-forge start\"",
+    "package": "electron-forge package",
+    "make": "electron-forge make",
+    "publish": "electron-forge publish",
+    "lint": "eslint --ext .ts,.js,.json ./src",
+    "typecheck": "tsc --noEmit true",
+    "checks": "npm run typecheck && npm run lint"
   },
-  "build": {
-    "appId": "badger.alpha",
-    "files": [
-      "./dist/**/*"
-    ],
-    "win": {
-      "target": "portable",
-      "icon": "./src/assets/images/alphaBadger.png"
-    },
-    "directories": {
-      "buildResources": "public"
+  "keywords": [
+    "FFmpeg",
+    "GUI"
+  ],
+  "author": {
+    "name": "NoamR",
+    "email": "noamraby@gmail.com"
+  },
+  "license": "MIT",
+  "config": {
+    "forge": {
+      "packagerConfig": {},
+      "makers": [
+        {
+          "name": "@electron-forge/maker-squirrel",
+          "config": {
+            "name": "alpha_badger"
+          }
+        },
+        {
+          "name": "@electron-forge/maker-zip",
+          "platforms": [
+            "darwin"
+          ]
+        },
+        {
+          "name": "@electron-forge/maker-deb",
+          "config": {}
+        },
+        {
+          "name": "@electron-forge/maker-rpm",
+          "config": {}
+        }
+      ]
     }
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/NoamRa/alpha-badger.git"
-  },
-  "keywords": [],
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/NoamRa/alpha-badger/issues"
-  },
-  "homepage": "https://github.com/NoamRa/alpha-badger#readme",
   "devDependencies": {
-    "@types/ffmpeg-static": "^3.0.0",
+    "@electron-forge/cli": "6.0.0-beta.51",
+    "@electron-forge/maker-deb": "6.0.0-beta.51",
+    "@electron-forge/maker-rpm": "6.0.0-beta.51",
+    "@electron-forge/maker-squirrel": "6.0.0-beta.51",
+    "@electron-forge/maker-zip": "6.0.0-beta.51",
     "@types/fluent-ffmpeg": "^2.1.14",
-    "@types/react": "16.9.25",
-    "@types/react-dom": "16.9.5",
-    "electron": "8.2.0",
-    "electron-builder": "^22.4.1",
-    "ffmpeg-static": "^4.0.1",
-    "ffmpeg-static-electron": "^2.0.1",
-    "fluent-ffmpeg": "2.1.2",
-    "html-webpack-plugin": "4.0.1",
-    "react": "16.13.1",
-    "react-dom": "16.13.1",
-    "ts-loader": "6.2.2",
-    "typescript": "3.8.3",
-    "webpack": "4.42.1",
-    "webpack-cli": "3.3.11"
+    "@types/fs-extra": "^9.0.1",
+    "@typescript-eslint/eslint-plugin": "^2.18.0",
+    "@typescript-eslint/parser": "^2.18.0",
+    "concurrently": "^5.2.0",
+    "css-loader": "^3.0.0",
+    "electron": "9.0.4",
+    "eslint": "^6.8.0",
+    "eslint-config-prettier": "^6.11.0",
+    "eslint-plugin-import": "^2.20.0",
+    "eslint-plugin-prettier": "^3.1.4",
+    "node-loader": "^0.6.0",
+    "prettier": "^2.0.5",
+    "style-loader": "^0.23.1",
+    "ts-loader": "^6.2.1",
+    "typescript": "^3.7.0"
   },
-  "dependencies": {}
+  "dependencies": {
+    "electron-squirrel-startup": "^1.0.0",
+    "fluent-ffmpeg": "^2.1.2",
+    "fs-extra": "^9.0.1"
+  }
 }
