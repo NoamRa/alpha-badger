@@ -1,6 +1,6 @@
 import * as path from "path";
 import * as fs from "fs-extra";
-import { app, BrowserWindow, ipcMain } from "electron";
+import { app, BrowserWindow, ipcMain, dialog } from "electron";
 import { executeFfmpegCommand, Progress } from "./ffmpeg";
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
@@ -73,8 +73,9 @@ app.on("activate", () => {
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and import them here.
 
-// TODO move to preload
-ipcMain.handle("command", async (event, commandArguments: string) => {
+// region ipcMain handlers
+// TODO refactor out or index
+ipcMain.handle("command", (event, commandArguments: string) => {
   const options = {
     handleError: (error: string) => {
       mainWindow.webContents.send("ffmpeg-error", JSON.stringify(error));
@@ -92,3 +93,22 @@ ipcMain.handle("command", async (event, commandArguments: string) => {
   console.log("about to executeFfmpegCommand");
   executeFfmpegCommand(commandArguments, options);
 });
+
+ipcMain.handle(
+  "open-file",
+  async (event, filters: Electron.FileFilter[]): Promise<string[]> => {
+    const result = await dialog.showOpenDialog(mainWindow, {
+      properties: ["openFile", "multiSelections"],
+      filters,
+    });
+    console.log(
+      result.canceled
+        ? "user canceled file selection"
+        : `user selected files\n ${JSON.stringify(result.filePaths, null, 2)}`,
+    );
+
+    return result.filePaths;
+  },
+);
+
+// endregion

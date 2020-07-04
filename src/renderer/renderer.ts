@@ -1,9 +1,31 @@
-/** See exposed functions on preload.ts */
-// @ts-ignore
-const { runFfmpegCommand, receive } = window.alphaBadgerApi;
+/** See exposed methods on preload.ts */
 
+// @ts-ignore
+const { runFfmpegCommand, receive, openFile } = window.alphaBadgerApi;
+
+const filePickerButton = document.getElementById("filePicker");
+const clearFilesButton = document.getElementById("clearFiles");
+const files = document.getElementById("files");
 const openAndToRenderButton = document.getElementById("render");
 const progressEl: HTMLSpanElement = document.getElementById("progress");
+
+filePickerButton.addEventListener("click", async () => {
+  const filePaths: string[] = await openFile();
+  if (filePaths.length === 0) {
+    console.log("user canceled");
+    return;
+  }
+  // Handle duplicate files is left to the UI
+  filePaths.forEach((path: string) => {
+    const filePathEl = document.createElement("li");
+    filePathEl.innerText = path;
+    files.appendChild(filePathEl);
+  });
+});
+
+clearFilesButton.addEventListener("click", async () => {
+  files.innerHTML = "";
+});
 
 openAndToRenderButton.addEventListener("click", () => {
   console.log("renderer calling runFfmpegCommand");
@@ -28,5 +50,3 @@ receive("ffmpeg-start", (start: unknown) => {
 receive("ffmpeg-codecData", (codecData: unknown) => {
   console.log("got codecData", codecData);
 });
-
-console.log("👋 This message is being logged by 'renderer.js'");

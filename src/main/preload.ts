@@ -14,14 +14,25 @@ const receive = (channel: string, listener: Listener): void => {
 
 const runFfmpegCommand = (command: string): void => {
   console.log("about to invoke command with", command);
-  const result = ipcRenderer.invoke("command", command);
+  ipcRenderer.invoke("command", command);
+};
+
+const openFile = (
+  filters: Electron.FileFilter[] = [{ name: "All Files", extensions: ["*"] }],
+): Promise<void> => {
+  return ipcRenderer.invoke("open-file", filters);
 };
 
 export type AlphaBadgerApi = {
-  runFfmpegCommand: (command: string) => void;
+  alphaBadgerApi: {
+    openFile: () => void;
+    receive: (channel: string, listener: Listener) => void;
+    runFfmpegCommand: (command: string) => void;
+  };
 };
 
 const alphaBadgerApi = {
+  openFile,
   receive,
   runFfmpegCommand,
 };
