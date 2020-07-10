@@ -95,7 +95,7 @@ ipcMain.handle("command", (event, commandArguments: string) => {
 });
 
 ipcMain.handle(
-  "open-file",
+  "choose-files",
   async (event, filters: Electron.FileFilter[]): Promise<string[]> => {
     const result = await dialog.showOpenDialog(mainWindow, {
       properties: ["openFile", "multiSelections"],
@@ -108,6 +108,21 @@ ipcMain.handle(
     );
 
     return result.filePaths;
+  },
+);
+ipcMain.handle(
+  "choose-folder",
+  async (event): Promise<string | undefined> => {
+    const result = await dialog.showOpenDialog(mainWindow, {
+      properties: ["openDirectory"],
+    });
+    console.log(
+      result.canceled
+        ? "user canceled folder selection"
+        : `user selected folder ${result.filePaths[0]}`,
+    );
+
+    return result.filePaths[0];
   },
 );
 
