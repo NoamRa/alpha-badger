@@ -75,18 +75,18 @@ app.on("activate", () => {
 
 // region ipcMain handlers
 // TODO refactor out or index
-ipcMain.handle("command", (event, commandArguments: string) => {
+ipcMain.handle("command", (event, commandArguments: string): void => {
   const options = {
-    handleError: (error: string) => {
+    handleError: (error: string): void => {
       mainWindow.webContents.send("ffmpeg-error", JSON.stringify(error));
     },
-    handleStart: (commandLine: string) => {
+    handleStart: (commandLine: string): void => {
       mainWindow.webContents.send("ffmpeg-start", JSON.stringify(commandLine));
     },
-    handleProgress: (progress: Progress) => {
+    handleProgress: (progress: Progress): void => {
       mainWindow.webContents.send("ffmpeg-progress", JSON.stringify(progress));
     },
-    handleCodecData: (data: unknown) => {
+    handleCodecData: (data: unknown): void => {
       mainWindow.webContents.send("ffmpeg-codecData", JSON.stringify(data));
     },
   };
@@ -112,7 +112,7 @@ ipcMain.handle(
 );
 ipcMain.handle(
   "choose-folder",
-  async (event): Promise<string | undefined> => {
+  async (/* event */): Promise<string | undefined> => {
     const result = await dialog.showOpenDialog(mainWindow, {
       properties: ["openDirectory"],
     });
