@@ -1,7 +1,7 @@
 import fluentFFmpeg from "fluent-ffmpeg";
 
 // TODO get from user or app config
-const ffmpegPath = "C:\\util\\ffmpeg-3.4-win64-static\\bin\\ffmpeg.exe";
+// const ffmpegPath = "C:\\util\\ffmpeg-3.4-win64-static\\bin\\ffmpeg.exe";
 // const ffprobePath = "C:\\util\\ffmpeg-3.4-win64-static\\bin\\ffprobe.exe";
 
 // const ffmpegCommand = fluentFFmpeg();
@@ -42,16 +42,18 @@ function wrapFluentFfmpegCommand(
   commandArguments: string,
 ): fluentFFmpeg.FfmpegCommand {
   // inspired by https://stackoverflow.com/a/59899403/4205578
-  let command = fluentFFmpeg().output(" "); // pass "Invalid output" validation
+  const command = fluentFFmpeg().output(" "); // pass "Invalid output" validation
+  /* eslint-disable @typescript-eslint/ban-ts-ignore */
   // @ts-ignore accessing private _outputs
   const outsput = command._outputs[0];
   outsput.isFile = false; // disable adding "-y" argument
   outsput.target = ""; // bypass "Unable to find a suitable output format for ' '"
   // @ts-ignore overriging private _global
-  command._global.get = () => {
+  command._global.get = (): string[] => {
     // append custom arguments
     return commandArguments.split(" ");
   };
+  /* eslint-enable */
   return command;
 }
 
