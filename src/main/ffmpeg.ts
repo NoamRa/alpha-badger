@@ -43,6 +43,7 @@ function wrapFluentFfmpegCommand(
 ): fluentFFmpeg.FfmpegCommand {
   // inspired by https://stackoverflow.com/a/59899403/4205578
   const command = fluentFFmpeg().output(" "); // pass "Invalid output" validation
+  /* eslint-disable @typescript-eslint/ban-ts-ignore */
   // @ts-ignore accessing private _outputs
   const outsput = command._outputs[0];
   outsput.isFile = false; // disable adding "-y" argument
@@ -52,6 +53,7 @@ function wrapFluentFfmpegCommand(
     // append custom arguments
     return commandArguments.split(" ");
   };
+  /* eslint-enable */
   return command;
 }
 

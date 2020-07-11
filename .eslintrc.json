@@ -4,6 +4,13 @@
     "es6": true,
     "node": true
   },
+  "settings": {
+    "import/resolver": {
+      "node": {
+        "extensions": [".js", ".jsx", ".ts", ".tsx"]
+      }
+    }
+  },
   "parser": "@typescript-eslint/parser",
   "plugins": ["@typescript-eslint", "prettier"],
   "extends": [
@@ -15,7 +22,6 @@
     "plugin:prettier/recommended"
   ],
   "rules": {
-    "prettier/prettier": "error",
-    "@typescript-eslint/ban-ts-ignore": "warn"
+    "prettier/prettier": "error"
   }
 }

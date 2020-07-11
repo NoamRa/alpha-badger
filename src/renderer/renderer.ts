@@ -1,5 +1,6 @@
 /** See exposed methods on preload.ts */
 
+/* eslint-disable @typescript-eslint/ban-ts-ignore */
 const {
   runFfmpegCommand,
   receive,
@@ -7,7 +8,10 @@ const {
   chooseFolder,
   path,
   // @ts-ignore
+  // TODO find a way to import type 'AlphaBadgerApi'.
+  // At the moment it fails on runtime even though 'import type' should dissapear after compile
 } = window.alphaBadgerApi;
+/* eslint-enable */
 
 // region files to render
 const filePickerButton = document.getElementById("filePicker");
