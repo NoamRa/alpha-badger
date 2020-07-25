@@ -40,7 +40,7 @@ function wrapFluentFfmpegCommand(
 
   command.setFfmpegPath(ffmpegPath);
 
-  /* eslint-disable @typescript-eslint/ban-ts-ignore */
+  /* eslint-disable @typescript-eslint/ban-ts-comment */
   // @ts-ignore accessing private _outputs
   const outsput = command._outputs[0];
   outsput.isFile = false; // disable adding "-y" argument
