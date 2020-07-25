@@ -1,15 +1,20 @@
-import fs from "fs-extra";
+import Store from "electron-store";
 
-type AppConfig = {
-  ffmpegPath: string;
-};
+type Schema = { readonly ffmpegPath: unknown };
 
-export async function readConfig(path: string): Promise<AppConfig> {
-  try {
-    const config: AppConfig = await fs.readJson(path);
-    console.log("config: \n", config);
-    return config;
-  } catch (err) {
-    console.error(err);
+const schema = {
+  ffmpegPath: {
+    type: "string",
+  },
+} as const;
+
+export const store: Store<Schema> = new Store({
+  schema,
+});
+
+export function describeStoreContent(store: Store<Schema>): void {
+  console.log("store content:");
+  for (const [key, value] of store) {
+    console.log(`'${key}': '${JSON.stringify(value, null, 2)}'`);
   }
 }
