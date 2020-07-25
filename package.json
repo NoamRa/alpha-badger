@@ -11,6 +11,7 @@
     "make": "electron-forge make",
     "publish": "electron-forge publish",
     "lint": "eslint --ext .ts,.js,.json ./src",
+    "lint:fix": "npm run lint -- --fix",
     "typecheck": "tsc --noEmit true",
     "checks": "npm run typecheck && npm run lint"
   },
