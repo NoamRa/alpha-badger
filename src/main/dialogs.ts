@@ -13,4 +13,11 @@ export function getFilesToRender(): void {
   console.log(files);
 }
 
-console.log("loaded dialogs");
+export function getFFmpegPath(): string | undefined {
+  const files = dialog.showOpenDialogSync({
+    properties: ["openFile"],
+    title: "Select FFmpeg binary",
+  });
+
+  return files ? files[0] : undefined;
+}

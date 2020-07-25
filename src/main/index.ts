@@ -1,6 +1,8 @@
 import * as path from "path";
 import * as fs from "fs-extra";
 import { app, BrowserWindow, ipcMain, dialog } from "electron";
+import { store, describeStoreContent } from "./config";
+import { setAppMenu } from "./menu";
 import { executeFfmpegCommand, Progress } from "./ffmpeg";
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
@@ -9,9 +11,13 @@ if (require("electron-squirrel-startup")) {
   app.quit();
 }
 
+describeStoreContent(store);
+
 let mainWindow: BrowserWindow;
 
 const createWindow = (): void => {
+  setAppMenu();
+
   // Create the browser window.
   const preload: string = path.join(__dirname, "../main/preload.js");
   mainWindow = new BrowserWindow({

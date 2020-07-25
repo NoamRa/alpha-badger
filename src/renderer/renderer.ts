@@ -1,6 +1,6 @@
 /** See exposed methods on preload.ts */
 
-/* eslint-disable @typescript-eslint/ban-ts-ignore */
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 const {
   runFfmpegCommand,
   receive,

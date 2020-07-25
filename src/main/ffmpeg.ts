@@ -1,13 +1,5 @@
 import fluentFFmpeg from "fluent-ffmpeg";
-
-// TODO get from user or app config
-// const ffmpegPath = "C:\\util\\ffmpeg-3.4-win64-static\\bin\\ffmpeg.exe";
-// const ffprobePath = "C:\\util\\ffmpeg-3.4-win64-static\\bin\\ffprobe.exe";
-
-// const ffmpegCommand = fluentFFmpeg();
-// ffmpegCommand.setFfmpegPath(ffmpegPath);
-// export const ffprobeCommand = FfmpegCommand();
-// ffprobeCommand.setFfmpegPath(ffmpegPath);
+import { store } from "./config";
 
 export type Progress = Record<string, string | number>;
 function parseProgress(
@@ -39,11 +31,16 @@ function parseProgress(
 }
 
 function wrapFluentFfmpegCommand(
+  ffmpegPath: string,
   commandArguments: string,
 ): fluentFFmpeg.FfmpegCommand {
   // inspired by https://stackoverflow.com/a/59899403/4205578
+
   const command = fluentFFmpeg().output(" "); // pass "Invalid output" validation
-  /* eslint-disable @typescript-eslint/ban-ts-ignore */
+
+  command.setFfmpegPath(ffmpegPath);
+
+  /* eslint-disable @typescript-eslint/ban-ts-comment */
   // @ts-ignore accessing private _outputs
   const outsput = command._outputs[0];
   outsput.isFile = false; // disable adding "-y" argument
@@ -69,7 +66,10 @@ export function executeFfmpegCommand(
   options: FfmpegCommandOptions,
 ): void {
   try {
-    const ffmpegCommand = wrapFluentFfmpegCommand(command);
+    const ffmpegCommand = wrapFluentFfmpegCommand(
+      store.get("ffmpegPath") as string,
+      command,
+    );
     ffmpegCommand
       .on("error", options.handleError)
       .on("start", options.handleStart)
@@ -83,32 +83,3 @@ export function executeFfmpegCommand(
     throw new Error(err);
   }
 }
-
-/**
- * an experiment using spawn directly
-export function executeFfmpegCommand(
-  command: string,
-  options: FfmpegCommandOptions,
-): void {
-  const ffmpegProc = spawn(ffmpegPath, command.split(" "), { detached: false });
-  ffmpegProc.on("close", (code) => {
-    console.log(`child process exited with code ${code}`);
-  });
-  ffmpegProc.on("error", (err) => {
-    console.error("Failed to start subprocess.", err);
-  });
-  // ffmpegProc.stdout.on("data", (data) => {
-  //   console.log(`stdout: ${data}`);
-  // });
-  ffmpegProc.stderr.on("data", (data) => {
-    // be default ffmpeg logs to stderr.
-    // https://ffmpeg.org/ffmpeg.html#Generic-options
-    if (data.includes("frame=")) {
-      const payload = data.toString();
-      console.log("handling progress", payload);
-      options.handleProgress(parseProgress(payload));
-    }
-    // console.error(`stderr: ${data}`);
-  });
-}
-*/
