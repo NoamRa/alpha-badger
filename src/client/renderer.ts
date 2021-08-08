@@ -14,9 +14,9 @@ const {
 /* eslint-enable */
 
 // region files to render
-const filePickerButton = document.getElementById("filePicker");
-const clearFilesButton = document.getElementById("clearFiles");
-const files = document.getElementById("files");
+const filePickerButton = document.getElementById("filePicker")!;
+const clearFilesButton = document.getElementById("clearFiles")!;
+const files = document.getElementById("files")!;
 const filesManager = new Set<string>([]);
 filePickerButton.addEventListener("click", async () => {
   const filePaths: string[] = await chooseFiles();
@@ -40,8 +40,8 @@ clearFilesButton.addEventListener("click", async () => {
 // endregion
 
 // region destination folder
-const folderPicker = document.getElementById("folderPicker");
-const destinationFolderView = document.getElementById("destinationFolder");
+const folderPicker = document.getElementById("folderPicker")!;
+const destinationFolderView = document.getElementById("destinationFolder")!;
 let destinationFolder = "";
 folderPicker.addEventListener("click", async () => {
   const folder: string | undefined = await chooseFolder();
@@ -57,7 +57,7 @@ function buildCommand(input: string, outputDir: string): string {
   const destPath = path.join(outputDir, path.basename(input));
   return `-i ${input} -y ${destPath}`;
 }
-const renderButton = document.getElementById("render");
+const renderButton = document.getElementById("render")!;
 renderButton.addEventListener("click", () => {
   const firstFile = [...filesManager][0];
   const command = buildCommand(firstFile, destinationFolder);
@@ -67,7 +67,7 @@ renderButton.addEventListener("click", () => {
 // region events from rendering process
 
 // region progress
-const progressEl: HTMLSpanElement = document.getElementById("progress");
+const progressEl: HTMLSpanElement = document.getElementById("progress")!;
 receive("ffmpeg-progress", (progressStr: string) => {
   console.log("got progress", progressStr);
   if (progressStr) {

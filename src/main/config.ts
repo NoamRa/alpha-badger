@@ -1,5 +1,3 @@
-import Store from "electron-store";
-
 type Schema = { readonly ffmpegPath: unknown };
 
 const schema = {
