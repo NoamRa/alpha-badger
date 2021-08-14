@@ -7,8 +7,7 @@ const {
   chooseFiles,
   chooseFolder,
   path,
-  // @ts-ignore
-  // TODO find a way to import type 'AlphaBadgerApi'.
+  // @ts-ignore // TODO find a way to import type 'AlphaBadgerApi'.
   // At the moment it fails on runtime even though 'import type' should dissapear after compile
 } = window.alphaBadgerApi;
 /* eslint-enable */
