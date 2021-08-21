@@ -12,9 +12,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
       - name: Nodejs Setup
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v2
         with:
-          node-version: '12'
+          node-version: '14'
       - name: Install Dependancies
         run: npm ci
       - name: Run Checks
