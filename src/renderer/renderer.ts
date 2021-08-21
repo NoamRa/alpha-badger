@@ -2,11 +2,12 @@
 
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 const {
-  runFfmpegCommand,
+  runFFmpegCommand,
   receive,
   chooseFiles,
   chooseFolder,
   path,
+  stopAll,
   // @ts-ignore // TODO find a way to import type 'AlphaBadgerApi'.
   // At the moment it fails on runtime even though 'import type' should dissapear after compile
 } = window.alphaBadgerApi;
@@ -60,8 +61,8 @@ const renderButton = document.getElementById("render");
 renderButton.addEventListener("click", () => {
   const firstFile = [...filesManager][0];
   const command = buildCommand(firstFile, destinationFolder);
-  console.log("renderer calling runFfmpegCommand\n", command);
-  runFfmpegCommand(command);
+  console.log("renderer calling runFFmpegCommand\n", command);
+  runFFmpegCommand(command);
 });
 // region events from rendering process
 
@@ -80,6 +81,13 @@ receive("ffmpeg-progress", (progressStr: string) => {
   }
 });
 // endregion
+
+// region stop
+const stopButton = document.getElementById("stop");
+stopButton.addEventListener("click", () => {
+  console.log("sending stop signal");
+  stopAll();
+});
 
 receive("ffmpeg-error", (error: unknown) => {
   console.log("got error", error);

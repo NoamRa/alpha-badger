@@ -3,7 +3,8 @@ import * as fs from "fs-extra";
 import { app, BrowserWindow, ipcMain, dialog } from "electron";
 import { store, describeStoreContent } from "./config";
 import { setAppMenu } from "./menu";
-import { executeFfmpegCommand, Progress } from "./ffmpeg";
+import type { Progress } from "./ffmpeg/ffmpegUtils";
+import { executeFFmpegCommand, stopAll } from "./ffmpeg/ffmpeg";
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require("electron-squirrel-startup")) {
@@ -96,8 +97,12 @@ ipcMain.handle("command", (event, commandArguments: string): void => {
       mainWindow.webContents.send("ffmpeg-codecData", JSON.stringify(data));
     },
   };
-  console.log("about to executeFfmpegCommand");
-  executeFfmpegCommand(commandArguments, options);
+  console.log("about to executeFFmpegCommand");
+  executeFFmpegCommand(commandArguments, options);
+});
+
+ipcMain.handle("stop-all", (): void => {
+  stopAll();
 });
 
 ipcMain.handle(
