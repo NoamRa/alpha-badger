@@ -1,4 +1,4 @@
-# Alpha-Badger - FFmpgeg GUI
+# Alpha-Badger α🦡- FFmpgeg GUI
 
 ## This application is pre alpha. Miles to go before I sleep and all that.
 
