@@ -1,34 +1,10 @@
 import fluentFFmpeg from "fluent-ffmpeg";
-import { store } from "./config";
+import { Progress, parseProgress } from "./ffmpegUtils";
+import { processManager, Reason, Status } from "./processManager";
+import type { FFmpegProcess } from "./processManager";
+import { store } from "../config";
 
-export type Progress = Record<string, string | number>;
-function parseProgress(
-  progressLine: string,
-  callback?: (progress: Progress) => unknown,
-): Progress {
-  // Remove all spaces after = and trim.
-  // each progress part is a key-value pai. ex: "frame=123", "time=01:23:45.67"
-  const progressParts: string[] = progressLine
-    .replace(/=\s+/g, "=")
-    .trim()
-    .split(" ");
-
-  // build progress object
-  const progress: Progress = {};
-  for (const keyValuePair of progressParts) {
-    const [key, value] = keyValuePair.split("=", 2).map((v) => v.trim());
-    if (typeof value === "undefined") return null;
-    const valueAsNumber = +value;
-    progress[key] = !Number.isNaN(valueAsNumber) ? valueAsNumber : value;
-  }
-
-  // do something with progress object
-  // console.log(progress);
-  if (typeof callback === "function") {
-    callback(progress);
-  }
-  return progress;
-}
+export const procManager = processManager();
 
 function wrapFluentFfmpegCommand(
   ffmpegPath: string,
@@ -61,7 +37,7 @@ export type FfmpegCommandOptions = {
   handleCodecData: (data: unknown) => void;
 };
 
-export function executeFfmpegCommand(
+export function executeFFmpegCommand(
   command: string,
   options: FfmpegCommandOptions,
 ): void {
@@ -70,16 +46,35 @@ export function executeFfmpegCommand(
       store.get("ffmpegPath") as string,
       command,
     );
+    const id = procManager.add(command, ffmpegCommand);
+
     ffmpegCommand
-      .on("error", options.handleError)
-      .on("start", options.handleStart)
+      .on("error", (error: string) => {
+        options.handleError(error);
+        procManager.setStatus(id, Status.Stopped);
+        procManager.setReason(id, Reason.Error);
+      })
+      .on("start", (commandLine: string) => {
+        options.handleStart(commandLine);
+        procManager.setStatus(id, Status.Running);
+      })
       .on("codecData", options.handleCodecData)
       .on("stderr", (progress: string) =>
+        // FFmpeg reports process on stderr 🤷🏽‍♀️
         parseProgress(progress, options.handleProgress),
       );
     return ffmpegCommand.run();
   } catch (err) {
-    console.log("executeFfmpegCommand0 error", err);
+    console.log("executeFFmpegCommand error", err);
     throw new Error(err);
   }
+}
+
+function stop(id: FFmpegProcess["id"]): void {
+  const process = procManager.get(id).process;
+  process.kill();
+}
+
+export function stopAll(): void {
+  procManager.getIds().forEach(stop);
 }

@@ -12,9 +12,14 @@ const receive = (channel: string, listener: Listener): void => {
   ipcRenderer.on(channel, (event, ...args) => listener(...args));
 };
 
-const runFfmpegCommand = (command: string): void => {
+const runFFmpegCommand = (command: string): void => {
   console.log("about to invoke command with", command);
   ipcRenderer.invoke("command", command);
+};
+
+const stopAll = (): void => {
+  console.log("about to stop all FFmpeg processes");
+  ipcRenderer.invoke("stop-all");
 };
 
 const chooseFiles = (
@@ -32,7 +37,8 @@ export type AlphaBadgerApi = {
     chooseFiles: typeof chooseFiles;
     chooseFolder: typeof chooseFolder;
     receive: typeof receive;
-    runFfmpegCommand: typeof runFfmpegCommand;
+    runFFmpegCommand: typeof runFFmpegCommand;
+    stopAll: typeof stopAll;
     path: typeof path;
   };
 };
@@ -41,8 +47,9 @@ const alphaBadgerApi: AlphaBadgerApi["alphaBadgerApi"] = {
   chooseFiles,
   chooseFolder,
   receive,
-  runFfmpegCommand,
-  path: path,
+  runFFmpegCommand,
+  stopAll,
+  path,
 };
 
 // will be exposed on window.alphaBadgerApi
