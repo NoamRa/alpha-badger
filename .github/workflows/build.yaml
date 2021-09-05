@@ -19,6 +19,13 @@ jobs:
       - uses: actions/setup-node@master
         with:
           node-version: 14
+      - name: Cache multiple paths
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/cache
+            !~/cache/exclude
+          key: ${{ runner.os }}-${{ hashFiles('**/lockfiles') }}
       - name: Install dependencies
         run: npm install
       - name: TypeScript compile
