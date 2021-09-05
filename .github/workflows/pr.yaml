@@ -14,7 +14,14 @@ jobs:
       - name: Nodejs Setup
         uses: actions/setup-node@v2
         with:
-          node-version: '14'
+          node-version: "14"
+      - name: Cache multiple paths
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/cache
+            !~/cache/exclude
+          key: ${{ runner.os }}-${{ hashFiles('**/lockfiles') }}
       - name: Install Dependancies
         run: npm ci
       - name: Run Checks
