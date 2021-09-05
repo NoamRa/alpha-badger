@@ -1,73 +1,96 @@
-import fluentFFmpeg from "fluent-ffmpeg";
-import { Progress, parseProgress } from "./ffmpegUtils";
-import { processManager, Reason, Status } from "./processManager";
+import { exec } from "child_process";
+import { invalidFFmpegError, missingFFmpegError } from "../dialogs";
+import { store } from "../store";
+import type { FFmpegError, FFmpegCommandHandlers } from "./types";
 import type { FFmpegProcess } from "./processManager";
-import { store } from "../config";
+import { parseProgress } from "./parseProgress";
+import { processManager, Reason, Status } from "./processManager";
+import { validateFFmpeg } from "./validateFFmpeg";
 
 export const procManager = processManager();
 
-function wrapFluentFfmpegCommand(
-  ffmpegPath: string,
-  commandArguments: string,
-): fluentFFmpeg.FfmpegCommand {
-  // inspired by https://stackoverflow.com/a/59899403/4205578
-
-  const command = fluentFFmpeg().output(" "); // pass "Invalid output" validation
-
-  command.setFfmpegPath(ffmpegPath);
-
-  /* eslint-disable @typescript-eslint/ban-ts-comment */
-  // @ts-ignore accessing private _outputs
-  const outsput = command._outputs[0];
-  outsput.isFile = false; // disable adding "-y" argument
-  outsput.target = ""; // bypass "Unable to find a suitable output format for ' '"
-  // @ts-ignore overriging private _global
-  command._global.get = (): string[] => {
-    // append custom arguments
-    return commandArguments.split(" ");
-  };
-  /* eslint-enable */
-  return command;
-}
-
-export type FfmpegCommandOptions = {
-  handleError: (err: string) => void;
-  handleStart: (commandLine: string) => void;
-  handleProgress: (progress: Progress) => void;
-  handleCodecData: (data: unknown) => void;
-};
-
-export function executeFFmpegCommand(
+export async function executeFFmpegCommand(
   command: string,
-  options: FfmpegCommandOptions,
-): void {
-  try {
-    const ffmpegCommand = wrapFluentFfmpegCommand(
-      store.get("ffmpegPath") as string,
+  handlers: FFmpegCommandHandlers,
+): Promise<void> {
+  const ffmpegPath = store.get("ffmpegPath") as string;
+  if (!ffmpegPath) {
+    handlers.handleError({
+      id: -1,
+      message: "FFmpeg path is not set",
       command,
-    );
-    const id = procManager.add(command, ffmpegCommand);
-
-    ffmpegCommand
-      .on("error", (error: string) => {
-        options.handleError(error);
-        procManager.setStatus(id, Status.Stopped);
-        procManager.setReason(id, Reason.Error);
-      })
-      .on("start", (commandLine: string) => {
-        options.handleStart(commandLine);
-        procManager.setStatus(id, Status.Running);
-      })
-      .on("codecData", options.handleCodecData)
-      .on("stderr", (progress: string) =>
-        // FFmpeg reports process on stderr 🤷🏽‍♀️
-        parseProgress(progress, options.handleProgress),
-      );
-    return ffmpegCommand.run();
-  } catch (err) {
-    console.log("executeFFmpegCommand error", err);
-    throw new Error(err);
+    });
+    missingFFmpegError();
   }
+
+  if (!(await validateFFmpeg(ffmpegPath))) {
+    handlers.handleError({
+      id: -1,
+      message: "Invalid FFmpeg executable",
+      command,
+    });
+    invalidFFmpegError(ffmpegPath);
+  }
+
+  const ffmpegCommand = `${store.get("ffmpegPath")} ${command}`;
+  handlers.handleStart(ffmpegCommand);
+
+  const ffmpeg = exec(ffmpegCommand);
+
+  const id = procManager.add(command, ffmpeg);
+
+  // handle start
+  handlers.handleStart(ffmpegCommand);
+  procManager.setStatus(id, Status.Running);
+
+  ffmpeg.on("error", (error: unknown) => {
+    const ffmpegError: FFmpegError = {
+      id,
+      command,
+      message: "something went wrong",
+    };
+    if (error instanceof Error) {
+      ffmpegError.message = error.message;
+      ffmpegError.stack = error.stack;
+    } else if (typeof error === "string") {
+      ffmpegError.message = error;
+    }
+
+    handlers.handleError(ffmpegError);
+    procManager.setStatus(id, Status.Stopped);
+    procManager.setReason(id, Reason.Error);
+  });
+
+  ffmpeg.on("exit", (status: number | null, signal: "SIGTERM" | null) => {
+    if (status === 0) {
+      procManager.setStatus(id, Status.Stopped);
+      procManager.setReason(id, Reason.Done);
+    } else if (signal === "SIGTERM") {
+      procManager.setStatus(id, Status.Stopped);
+      procManager.setReason(id, Reason.Error);
+    }
+    handlers.handleEnd();
+  });
+
+  // FFmpeg reports process on stderr 🤷🏽‍♀️
+  ffmpeg.stderr.on("data", (data) => {
+    // raw data, always pushed
+    handlers.handleData(data);
+
+    // progress
+    if (data.includes("frame=")) {
+      data.split(/`\r\n|\r|\n`/).forEach((line: string) => {
+        if (line.includes("frame=")) {
+          const trimmed = line.trim();
+          trimmed && handlers.handleProgress(parseProgress(trimmed));
+        }
+      });
+    }
+
+    // codec data
+    // TODO see https://github.com/fluent-ffmpeg/node-fluent-ffmpeg/blob/68d5c948b689b3058e52435e0bc3d4af0eee349e/lib/utils.js#L275
+    // handlers.handleCodecData()
+  });
 }
 
 function stop(id: FFmpegProcess["id"]): void {

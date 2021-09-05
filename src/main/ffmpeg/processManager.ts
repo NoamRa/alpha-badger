@@ -1,5 +1,4 @@
-type ID = number;
-type Process = any; // TODO
+import type { ID, Process } from "./types";
 
 export enum Status {
   Initial,

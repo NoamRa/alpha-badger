@@ -1,6 +1,7 @@
 import { dialog } from "electron";
+import { validateFFmpeg } from "./ffmpeg/validateFFmpeg";
 
-export function getFilesToRender(): void {
+export function promptFilesToRender(): void {
   const files = dialog.showOpenDialog({
     properties: ["openFile"],
     title: "Add to render queue",
@@ -13,11 +14,38 @@ export function getFilesToRender(): void {
   console.log(files);
 }
 
-export function getFFmpegPath(): string | undefined {
-  const files = dialog.showOpenDialogSync({
+export async function promptFFmpegPath(): Promise<string | undefined> {
+  const { canceled, filePaths } = await dialog.showOpenDialog({
     properties: ["openFile"],
     title: "Select FFmpeg binary",
   });
 
-  return files ? files[0] : undefined;
+  if (canceled) {
+    return undefined;
+  }
+
+  const isValid = await validateFFmpeg(filePaths[0]);
+  if (isValid) {
+    return filePaths[0];
+  } else {
+    invalidFFmpegError(filePaths[0]);
+    return undefined;
+  }
+}
+
+export function invalidFFmpegError(ffmpegPath: string): void {
+  dialog.showErrorBox(
+    "Failed to open FFmpeg executable",
+    "The file at\n" +
+      ffmpegPath +
+      "\nis not an FFmpeg executable. " +
+      "\nPlease download from https://ffmpeg.org/download.html and choose again",
+  );
+}
+
+export function missingFFmpegError(): void {
+  dialog.showErrorBox(
+    "FFmpeg path missing",
+    "Please download FFmpeg from https://ffmpeg.org/download.html and set in the menu",
+  );
 }

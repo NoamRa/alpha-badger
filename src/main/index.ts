@@ -1,9 +1,13 @@
 import * as path from "path";
 import * as fs from "fs-extra";
 import { app, BrowserWindow, ipcMain, dialog } from "electron";
-import { store, describeStoreContent } from "./config";
+import { store, describeStoreContent } from "./store";
 import { setAppMenu } from "./menu";
-import type { Progress } from "./ffmpeg/ffmpegUtils";
+import type {
+  Progress,
+  FFmpegError,
+  FFmpegCommandHandlers,
+} from "./ffmpeg/types";
 import { executeFFmpegCommand, stopAll } from "./ffmpeg/ffmpeg";
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
@@ -83,12 +87,18 @@ app.on("activate", () => {
 // region ipcMain handlers
 // TODO refactor out or index
 ipcMain.handle("command", (event, commandArguments: string): void => {
-  const options = {
-    handleError: (error: string): void => {
+  const options: FFmpegCommandHandlers = {
+    handleError: (error: FFmpegError): void => {
       mainWindow.webContents.send("ffmpeg-error", JSON.stringify(error));
     },
     handleStart: (commandLine: string): void => {
       mainWindow.webContents.send("ffmpeg-start", JSON.stringify(commandLine));
+    },
+    handleEnd: (): void => {
+      mainWindow.webContents.send("ffmpeg-end");
+    },
+    handleData: (): void => {
+      mainWindow.webContents.send("ffmpeg-data");
     },
     handleProgress: (progress: Progress): void => {
       mainWindow.webContents.send("ffmpeg-progress", JSON.stringify(progress));
@@ -97,7 +107,7 @@ ipcMain.handle("command", (event, commandArguments: string): void => {
       mainWindow.webContents.send("ffmpeg-codecData", JSON.stringify(data));
     },
   };
-  console.log("about to executeFFmpegCommand");
+  console.log("about to executeFFmpegCommand \n", commandArguments);
   executeFFmpegCommand(commandArguments, options);
 });
 
