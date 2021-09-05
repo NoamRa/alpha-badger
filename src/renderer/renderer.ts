@@ -83,8 +83,8 @@ receive("ffmpeg-error", (error: unknown) => {
   statusEl.innerText = `Error \n${error}`;
 });
 
-receive("ffmpeg-start", (start: unknown) => {
-  console.log("got start", start);
+receive("ffmpeg-start", (command: string) => {
+  console.log("got start", command);
   statusEl.innerText = `Working...`;
 });
 
