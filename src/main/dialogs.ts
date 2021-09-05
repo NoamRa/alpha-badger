@@ -1,4 +1,5 @@
 import { dialog } from "electron";
+import { validateFFmpeg } from "./ffmpeg/validateFFmpeg";
 
 export function getFilesToRender(): void {
   const files = dialog.showOpenDialog({
@@ -13,11 +14,27 @@ export function getFilesToRender(): void {
   console.log(files);
 }
 
-export function getFFmpegPath(): string | undefined {
-  const files = dialog.showOpenDialogSync({
+export async function getFFmpegPath(): Promise<string | undefined> {
+  const { canceled, filePaths } = await dialog.showOpenDialog({
     properties: ["openFile"],
     title: "Select FFmpeg binary",
   });
 
-  return files ? files[0] : undefined;
+  if (canceled) {
+    return undefined;
+  }
+
+  const isValid = await validateFFmpeg(filePaths[0]);
+  if (isValid) {
+    return filePaths[0];
+  } else {
+    dialog.showErrorBox(
+      "Failed to open FFmpeg executable",
+      "The file at\n" +
+        filePaths[0] +
+        "\nis not an FFmpeg executable. " +
+        "\nPlease download from https://ffmpeg.org/download.html and choose again",
+    );
+    return undefined;
+  }
 }
