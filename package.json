@@ -12,7 +12,6 @@
     "tsc": "tsc",
     "package": "electron-forge package",
     "make": "electron-forge make",
-    "prepublish": "npm run tsc",
     "publish": "electron-forge publish",
     "lint": "eslint --ext .ts,.tsx,.js,.tsx,.json ./src",
     "lint:fix": "npm run lint -- --fix",

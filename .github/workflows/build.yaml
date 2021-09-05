@@ -19,9 +19,11 @@ jobs:
       - uses: actions/setup-node@master
         with:
           node-version: 14
-      - name: install dependencies
+      - name: Install dependencies
         run: npm install
-      - name: publish
+      - name: TypeScript compile
+        run: npm run tsc
+      - name: Publish
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: npm run publish
