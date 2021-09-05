@@ -55,7 +55,17 @@ folderPicker.addEventListener("click", async () => {
 // region render
 function buildCommand(input: string, outputDir: string): string {
   const destPath = path.join(outputDir, path.basename(input));
-  return `-i ${input} -y ${destPath}`;
+  return "".concat(
+    `-i ${input} `,
+    `-filter_complex `.concat(
+      `"`,
+      `[0:v] split [paletteinput][vid];`,
+      `[paletteinput] palettegen [palette];`,
+      `[vid][palette] paletteuse`,
+      `" `,
+    ),
+    `-y ${destPath}.gif`,
+  );
 }
 const renderButton = document.getElementById("render");
 renderButton.addEventListener("click", () => {
@@ -66,18 +76,37 @@ renderButton.addEventListener("click", () => {
 });
 // region events from rendering process
 
+// region status
+const statusEl: HTMLElement = document.getElementById("status");
+receive("ffmpeg-error", (error: unknown) => {
+  console.log("got error", error);
+  statusEl.innerText = `Error \n${error}`;
+});
+
+receive("ffmpeg-start", (start: unknown) => {
+  console.log("got start", start);
+  statusEl.innerText = `Working...`;
+});
+
+receive("ffmpeg-end", () => {
+  console.log("got end");
+  statusEl.innerText = `Done`;
+});
+
 // region progress
-const progressEl: HTMLSpanElement = document.getElementById("progress");
+const progressEl: HTMLElement = document.getElementById("progress");
 receive("ffmpeg-progress", (progressStr: string) => {
   console.log("got progress", progressStr);
   if (progressStr) {
     const progress = JSON.parse(progressStr);
-    progressEl.textContent = "";
+    const progressFrag = new DocumentFragment();
     Object.entries(progress).forEach(([key, value]) => {
       const progressInfo = document.createElement("li");
       progressInfo.innerText = `${key}: ${value}`;
-      progressEl.appendChild(progressInfo);
+      progressFrag.appendChild(progressInfo);
     });
+    progressEl.innerText = "";
+    progressEl.appendChild(progressFrag);
   }
 });
 // endregion
@@ -87,14 +116,6 @@ const stopButton = document.getElementById("stop");
 stopButton.addEventListener("click", () => {
   console.log("sending stop signal");
   stopAll();
-});
-
-receive("ffmpeg-error", (error: unknown) => {
-  console.log("got error", error);
-});
-
-receive("ffmpeg-start", (start: unknown) => {
-  console.log("got start", start);
 });
 
 receive("ffmpeg-codecData", (codecData: unknown) => {

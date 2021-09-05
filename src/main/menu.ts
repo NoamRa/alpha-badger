@@ -1,5 +1,5 @@
 import { Menu, MenuItem } from "electron";
-import { getFFmpegPath } from "./dialogs";
+import { promptFFmpegPath } from "./dialogs";
 import { store } from "./store";
 
 export function setAppMenu(): void {
@@ -9,7 +9,7 @@ export function setAppMenu(): void {
     new MenuItem({
       label: "Set FFmpeg Path",
       async click(): Promise<void> {
-        const ffmpegPath = await getFFmpegPath();
+        const ffmpegPath = await promptFFmpegPath();
         if (ffmpegPath) {
           console.log(ffmpegPath);
           store.set("ffmpegPath", ffmpegPath);
