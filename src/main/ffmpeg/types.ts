@@ -1,5 +1,5 @@
 export type ID = number;
-export type Process = any; // TODO
+export type Process = unknown; // TODO
 
 export type Progress = Record<string, string | number>;
 export type FFmpegError = {
