@@ -35,4 +35,4 @@ jobs:
       - uses: actions/upload-artifact@v2
         with:
           name: artifacts
-          path: out/make/alpha-badger*
+          path: out/make/**/alpha-badger*.*
