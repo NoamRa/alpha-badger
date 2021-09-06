@@ -1,5 +1,6 @@
 export type ID = number;
-export type Process = unknown; // TODO
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type Process = any; // TODO
 
 export type Progress = Record<string, string | number>;
 export type FFmpegError = {
