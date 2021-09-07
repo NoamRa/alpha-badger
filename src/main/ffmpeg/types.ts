@@ -1,4 +1,5 @@
 export type ID = number;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type Process = any; // TODO
 
 export type Progress = Record<string, string | number>;
