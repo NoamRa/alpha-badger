@@ -1,11 +1,11 @@
 name: Build and Release
 on:
-  # release:
-  #   types:
-  #     - created
-  pull_request:
-    branches:
-      - main
+  release:
+    types:
+      - created
+  # pull_request:
+  #   branches:
+  #     - main
 
 jobs:
   publish:
@@ -38,7 +38,7 @@ jobs:
           path: out/make/**/*.*
       - name: Release
         uses: softprops/action-gh-release@v1
-        # if: startsWith(github.ref, 'refs/tags/')
+        if: startsWith(github.ref, 'refs/tags/')
         with: 
           files: |
             out/make/squirrel.windows/x64/alpha-badger*.*
