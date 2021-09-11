@@ -79,7 +79,7 @@ export async function executeFFmpegCommand(
 
     // progress
     if (data.includes("frame=")) {
-      data.split(/`\r\n|\r|\n`/).forEach((line: string) => {
+      data.split(new RegExp(`\r\n|\r|\n`)).forEach((line: string) => {
         if (line.includes("frame=")) {
           const trimmed = line.trim();
           trimmed && handlers.handleProgress(parseProgress(trimmed));
