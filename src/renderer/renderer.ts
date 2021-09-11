@@ -64,7 +64,7 @@ function buildCommand(input: string, outputDir: string): string {
       `[vid][palette] paletteuse`,
       `" `,
     ),
-    `-y ${destPath}.gif`,
+    `-y "${destPath}.gif"`,
   );
 }
 const renderButton = document.getElementById("render");

@@ -21,7 +21,7 @@ export function setAppMenu(): void {
           { role: "quit" },
         ],
       }
-    : {};
+    : undefined;
 
   const fileMenu: MenuItemConstructorOptions = {
     label: "File",
@@ -84,8 +84,8 @@ export function setAppMenu(): void {
             console.log("set ffmpegPath at", store.get("ffmpegPath"));
           }
         },
-      }
-    ]
+      },
+    ],
   };
 
   const windowMenu: MenuItemConstructorOptions = {
@@ -116,14 +116,16 @@ export function setAppMenu(): void {
     ],
   };
 
-  const menu: Menu = Menu.buildFromTemplate([
-    appMenu,
-    fileMenu,
-    editMenu,
-    viewMenu,
-    alphaBadgerMenu,
-    windowMenu,
-    helpMenu,
-  ]);
+  const menu: Menu = Menu.buildFromTemplate(
+    [
+      appMenu,
+      fileMenu,
+      editMenu,
+      viewMenu,
+      alphaBadgerMenu,
+      windowMenu,
+      helpMenu,
+    ].filter(Boolean),
+  );
   Menu.setApplicationMenu(menu);
 }
