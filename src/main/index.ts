@@ -54,9 +54,10 @@ const createWindow = (): void => {
 
   // and load the index.html of the app.
   mainWindow.loadFile(path.join(__dirname, "../renderer/index.html"));
-
-  // TODO only on dev mode
-  mainWindow.webContents.openDevTools();
+  
+  if (!app.isPackaged) {
+    mainWindow.webContents.openDevTools();
+  }
 };
 
 // This method will be called when Electron has finished

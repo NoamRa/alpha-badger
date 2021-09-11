@@ -9,7 +9,7 @@ const {
   path,
   stopAll,
   // @ts-ignore // TODO find a way to import type 'AlphaBadgerApi'.
-  // At the moment it fails on runtime even though 'import type' should dissapear after compile
+  // At the moment it fails on runtime even though 'import type' should disappear after compile
 } = window.alphaBadgerApi;
 /* eslint-enable */
 
@@ -56,7 +56,7 @@ folderPicker.addEventListener("click", async () => {
 function buildCommand(input: string, outputDir: string): string {
   const destPath = path.join(outputDir, path.basename(input));
   return "".concat(
-    `-i ${input} `,
+    `-i "${input}" `,
     `-filter_complex `.concat(
       `"`,
       `[0:v] split [paletteinput][vid];`,
