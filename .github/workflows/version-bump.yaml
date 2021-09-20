@@ -1,0 +1,41 @@
+name: Autobump
+
+on:
+  pull_request:
+    types: [closed]
+  branches:
+    - main
+
+jobs:
+  label-version-bump:
+    runs-on: ubuntu-latest
+    if: |
+      github.event.pull_request.merged
+      && (
+          contains(github.event.pull_request.labels.*.name, 'bump patch')
+          || contains(github.event.pull_request.labels.*.name, 'bump minor')
+          || contains(github.event.pull_request.labels.*.name, 'bump major')
+      )
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event.pull_request.base.ref }}
+
+      - name: Bump
+        env:
+          BUMP_PATCH_PRESENT: ${{ contains(github.event.pull_request.labels.*.name, 'bump patch') }}
+          BUMP_MINOR_PRESENT: ${{ contains(github.event.pull_request.labels.*.name, 'bump minor') }}
+          BUMP_MAJOR_PRESENT: ${{ contains(github.event.pull_request.labels.*.name, 'bump major') }}
+        run: |
+          BUMP_TYPE=null
+          if [[ $BUMP_PATCH_PRESENT == 'true' ]]; then
+              npm version patch
+          fi
+          if [[ $BUMP_MINOR_PRESENT == 'true' ]]; then
+              npm version minor
+          fi
+          if [[ $BUMP_MAJOR_PRESENT == 'true' ]]; then
+              npm version major
+          fi
+          git push origin main
