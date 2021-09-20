@@ -1,4 +1,4 @@
-name: Autobump
+name: Bump Version
 
 on:
   pull_request:
