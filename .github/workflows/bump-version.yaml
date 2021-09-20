@@ -3,8 +3,7 @@ name: Bump Version
 on:
   pull_request:
     types: [closed]
-    branches:
-      - main
+    branches: [main]
 
 jobs:
   bump-version:
@@ -20,7 +19,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
         with:
-          ref: ${{ github.event.pull_request.base.ref }}
+          token: ${{ secrets.GH_PAT }}
 
       - name: Bump
         env:
@@ -28,8 +27,8 @@ jobs:
           BUMP_MINOR_PRESENT: ${{ contains(github.event.pull_request.labels.*.name, 'bump minor') }}
           BUMP_MAJOR_PRESENT: ${{ contains(github.event.pull_request.labels.*.name, 'bump major') }}
         run: |
-          git config --local user.name "Noam Raby"
-          git config --local user.email "noamraby@gmail.com"
+          git config user.name "Noam Raby"
+          git config user.email "noamraby@gmail.com"
 
           if [[ $BUMP_PATCH_PRESENT == 'true' ]]; then
               npm version patch
@@ -41,4 +40,4 @@ jobs:
               npm version major
           fi
 
-          git push origin main
+          git push
