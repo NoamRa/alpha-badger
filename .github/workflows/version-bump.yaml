@@ -1,0 +1,45 @@
+name: Bump Version
+
+on:
+  pull_request:
+    types: [closed]
+    branches:
+      - main
+
+jobs:
+  bump-version:
+    runs-on: ubuntu-latest
+    if: |
+      github.event.pull_request.merged
+      && (
+          contains(github.event.pull_request.labels.*.name, 'bump patch')
+          || contains(github.event.pull_request.labels.*.name, 'bump minor')
+          || contains(github.event.pull_request.labels.*.name, 'bump major')
+      )
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          token: ${{ secrets.GH_PAT }}
+          ref: ${{ github.event.pull_request.base.ref }}
+
+      - name: Bump
+        env:
+          BUMP_PATCH_PRESENT: ${{ contains(github.event.pull_request.labels.*.name, 'bump patch') }}
+          BUMP_MINOR_PRESENT: ${{ contains(github.event.pull_request.labels.*.name, 'bump minor') }}
+          BUMP_MAJOR_PRESENT: ${{ contains(github.event.pull_request.labels.*.name, 'bump major') }}
+        run: |
+          git config --local user.name "Noam Raby"
+          git config --local user.email "noamraby@gmail.com"
+
+          if [[ $BUMP_PATCH_PRESENT == 'true' ]]; then
+              npm version patch
+          fi
+          if [[ $BUMP_MINOR_PRESENT == 'true' ]]; then
+              npm version minor
+          fi
+          if [[ $BUMP_MAJOR_PRESENT == 'true' ]]; then
+              npm version major
+          fi
+
+          git push origin master
