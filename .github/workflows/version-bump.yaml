@@ -7,7 +7,7 @@ on:
       - main
 
 jobs:
-  label-version-bump:
+  bump-version:
     runs-on: ubuntu-latest
     if: |
       github.event.pull_request.merged
@@ -38,6 +38,6 @@ jobs:
               npm version major
           fi
 
-          git config user.name "Noam Raby"
-          git config user.email "noamraby@gmail.com"
+          git config --local user.name "Noam Raby"
+          git config --local user.email "noamraby@gmail.com"
           git push origin main
