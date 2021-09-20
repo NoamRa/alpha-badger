@@ -28,6 +28,9 @@ jobs:
           BUMP_MINOR_PRESENT: ${{ contains(github.event.pull_request.labels.*.name, 'bump minor') }}
           BUMP_MAJOR_PRESENT: ${{ contains(github.event.pull_request.labels.*.name, 'bump major') }}
         run: |
+          git config --local user.name "Noam Raby"
+          git config --local user.email "noamraby@gmail.com"
+
           if [[ $BUMP_PATCH_PRESENT == 'true' ]]; then
               npm version patch
           fi
@@ -38,6 +41,4 @@ jobs:
               npm version major
           fi
 
-          git config --local user.name "Noam Raby"
-          git config --local user.email "noamraby@gmail.com"
           git push origin main
