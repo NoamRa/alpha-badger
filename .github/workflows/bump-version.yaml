@@ -40,5 +40,4 @@ jobs:
               NEW_VERSION=$(npm version major)
           fi
 
-          echo "$NEW_VERSION"
           git push origin $NEW_VERSION
