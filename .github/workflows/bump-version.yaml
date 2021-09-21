@@ -31,13 +31,14 @@ jobs:
           git config user.email "noamraby@gmail.com"
 
           if [[ $BUMP_PATCH_PRESENT == 'true' ]]; then
-              npm version patch
+              NEW_VERSION=$(npm version patch)
           fi
           if [[ $BUMP_MINOR_PRESENT == 'true' ]]; then
-              npm version minor
+              NEW_VERSION=$(npm version minor)
           fi
           if [[ $BUMP_MAJOR_PRESENT == 'true' ]]; then
-              npm version major
+              NEW_VERSION=$(npm version major)
           fi
 
-          git push
+          echo "$NEW_VERSION"
+          git push origin $NEW_VERSION
