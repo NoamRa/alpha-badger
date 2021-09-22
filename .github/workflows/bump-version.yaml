@@ -7,37 +7,30 @@ on:
 
 jobs:
   bump-version:
+    name: "Bump Version on main"
     runs-on: ubuntu-latest
-    if: |
-      github.event.pull_request.merged
-      && (
-          contains(github.event.pull_request.labels.*.name, 'bump patch')
-          || contains(github.event.pull_request.labels.*.name, 'bump minor')
-          || contains(github.event.pull_request.labels.*.name, 'bump major')
-      )
+
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2
+      - name: "Checkout"
+        uses: "actions/checkout@v2"
         with:
-          token: ${{ secrets.GH_PAT }}
-
-      - name: Bump
+          ref: ${{ github.ref }}
+      - name: "cat package.json"
+        run: cat ./package.json
+      - name: "Setup Node.js"
+        uses: "actions/setup-node@v2"
+        with:
+          node-version: 14
+      - name: "Automated Version Bump"
+        id: version-bump
+        uses: "phips28/gh-action-bump-version@master"
+        with:
+          tag-prefix: "v"
         env:
-          BUMP_PATCH_PRESENT: ${{ contains(github.event.pull_request.labels.*.name, 'bump patch') }}
-          BUMP_MINOR_PRESENT: ${{ contains(github.event.pull_request.labels.*.name, 'bump minor') }}
-          BUMP_MAJOR_PRESENT: ${{ contains(github.event.pull_request.labels.*.name, 'bump major') }}
-        run: |
-          git config user.name "Noam Raby"
-          git config user.email "noamraby@gmail.com"
-
-          if [[ $BUMP_PATCH_PRESENT == 'true' ]]; then
-              NEW_VERSION=$(npm version patch)
-          fi
-          if [[ $BUMP_MINOR_PRESENT == 'true' ]]; then
-              NEW_VERSION=$(npm version minor)
-          fi
-          if [[ $BUMP_MAJOR_PRESENT == 'true' ]]; then
-              NEW_VERSION=$(npm version major)
-          fi
-
-          git push origin $NEW_VERSION
+          GITHUB_TOKEN: ${{ secrets.GH_PAT }}
+      - name: "cat package.json"
+        run: cat ./package.json
+      - name: "Output Step"
+        env:
+          NEW_TAG: ${{ steps.version-bump.outputs.newTag }}
+        run: echo "new tag $NEW_TAG"
