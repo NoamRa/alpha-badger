@@ -19,7 +19,6 @@ jobs:
         uses: "actions/checkout@v1"
         with:
           ref: ${{ github.ref }}
-        with:
           token: ${{ secrets.GH_PAT }}
       - name: "cat package.json"
         run: cat ./package.json
@@ -32,6 +31,7 @@ jobs:
         uses: "phips28/gh-action-bump-version@master"
         with:
           tag-prefix: "v"
+          target-branch: "main"
         env:
           GITHUB_TOKEN: ${{ secrets.GH_PAT }}
       - name: "cat package.json"
