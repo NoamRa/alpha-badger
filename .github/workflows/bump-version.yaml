@@ -16,9 +16,10 @@ jobs:
 
     steps:
       - name: "Checkout"
-        uses: "actions/checkout@v2"
+        uses: "actions/checkout@v1"
         with:
           ref: ${{ github.ref }}
+          token: ${{ secrets.GH_PAT }}
       - name: "cat package.json"
         run: cat ./package.json
       - name: "Setup Node.js"
@@ -30,6 +31,7 @@ jobs:
         uses: "phips28/gh-action-bump-version@master"
         with:
           tag-prefix: "v"
+          target-branch: "main"
         env:
           GITHUB_TOKEN: ${{ secrets.GH_PAT }}
       - name: "cat package.json"
