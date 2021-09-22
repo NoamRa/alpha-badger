@@ -1,9 +1,13 @@
 name: Bump Version
 
 on:
-  pull_request:
-    types: [closed]
+  push:
     branches: [main]
+
+# on:
+#   pull_request:
+#     types: [closed]
+#     branches: [main]
 
 jobs:
   bump-version:
