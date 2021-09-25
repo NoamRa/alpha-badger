@@ -1,6 +1,8 @@
-# Alpha-Badger α🦡- FFmpgeg GUI
+# 🦡 Alpha-Badger - FFmpgeg GUI
 
-## This application is pre alpha. Miles to go before I sleep and all that.
+[![Alpha-Badger Logo](brand/Alpha_Badger_logo_960x480.png)](https://github.com/NoamRa/alpha-badger#readme)
+
+## This application is in alpha stages. Miles to go before I sleep and all that.
 
 ## What's this? Who is this for?
 
