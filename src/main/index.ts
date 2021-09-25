@@ -46,12 +46,6 @@ const createWindow = (): void => {
     mainWindow.focus();
   });
 
-  ["index.html", "index.css"].forEach((file: string) => {
-    const src = path.join(__dirname, "../../src/renderer/" + file);
-    const dist = path.join(__dirname, "../renderer/" + file);
-    fs.copyFileSync(src, dist);
-  });
-
   // and load the index.html of the app.
   mainWindow.loadFile(path.join(__dirname, "../renderer/index.html"));
 
