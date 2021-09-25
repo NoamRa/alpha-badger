@@ -24,9 +24,7 @@ jobs:
           key: ${{ runner.os }}-${{ hashFiles('**/lockfiles') }}
       - name: Install dependencies
         run: npm install
-      - name: TypeScript compile
-        run: npm run tsc
-      - name: Make
+      - name: Create packages
         run: npm run make
       - uses: actions/upload-artifact@v2
         with:
