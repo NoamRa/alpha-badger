@@ -23,7 +23,7 @@ Examples:
 
 You can either download [Alpha-Badger🦡 from "release" page](https://github.com/NoamRa/alpha-badger/releases) or checkout the repo and run locally.
 
-## To Develop
+## Developing
 
 Alpha-Badger🦡 is built using Electron.
 
@@ -31,6 +31,13 @@ Alpha-Badger🦡 is built using Electron.
 - At the moment it's best to run `npm start` after each change
 - There's also `npm develop` with will watch files, but only works on renderer side of the app
 - Use `npm run checks` to see everything is in order. (or individually run `typecheck` or `lint`. No tests yet...)
+
+## Release process
+* Commit changes. If the change minor or major, use keywords that will be detected by the [bump github action ](https://github.com/phips28/gh-action-bump-version#workflow)
+* Open a pull request and see that checks pass
+* Merge pull request. Version bumping will happen automatically, updating `package.json` and creating a git tag
+* Navigate to [new release page](https://github.com/NoamRa/alpha-badger/releases/new), choose the latest tag, fill in the title and add description
+* Github action will build and attach the artifacts to the new release, which (can be found here)[https://github.com/NoamRa/alpha-badger/releases/latest]
 
 ## Questions?
 
