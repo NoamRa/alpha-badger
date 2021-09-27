@@ -133,6 +133,8 @@ function buildCommand(
   outputDir: string,
 ): string {
   const destPath = path.join(outputDir, path.basename(input));
+  // Kudos to Collin Burger from GIPHY Engineering
+  // https://engineering.giphy.com/how-to-make-gifs-with-ffmpeg/
   return "".concat(
     `-i "${input}" `,
     `-filter_complex `.concat(
