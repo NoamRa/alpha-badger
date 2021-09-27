@@ -1,5 +1,4 @@
 import * as path from "path";
-import * as fs from "fs-extra";
 import { app, BrowserWindow, ipcMain, dialog } from "electron";
 import { store, describeStoreContent } from "./store";
 import { setAppMenu } from "./menu";
