@@ -5,10 +5,8 @@ import * as path from "path";
 import { contextBridge, ipcRenderer } from "electron";
 
 type Listener = (...args: unknown[]) => unknown;
-// type SendFn = (channel: string, data: unknown) => void;
-// type ReciveFn = (channel: string, listener: Listener) => void;
 
-const receive = (channel: string, listener: Listener): void => {
+const listen = (channel: string, listener: Listener): void => {
   ipcRenderer.on(channel, (event, ...args) => listener(...args));
 };
 
@@ -32,13 +30,18 @@ const chooseFolder = (): Promise<string | undefined> => {
   return ipcRenderer.invoke("choose-folder");
 };
 
+const readMetadata = (filePath: string): Promise<unknown> => {
+  return ipcRenderer.invoke("read-metadata", filePath);
+};
+
 export type AlphaBadgerApi = {
   alphaBadgerApi: {
     chooseFiles: typeof chooseFiles;
     chooseFolder: typeof chooseFolder;
-    receive: typeof receive;
+    listen: typeof listen;
     runFFmpegCommand: typeof runFFmpegCommand;
     stopAll: typeof stopAll;
+    readMetadata: typeof readMetadata;
     path: typeof path;
   };
 };
@@ -46,9 +49,10 @@ export type AlphaBadgerApi = {
 const alphaBadgerApi: AlphaBadgerApi["alphaBadgerApi"] = {
   chooseFiles,
   chooseFolder,
-  receive,
+  listen,
   runFFmpegCommand,
   stopAll,
+  readMetadata,
   path,
 };
 

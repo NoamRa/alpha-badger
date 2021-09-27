@@ -1,14 +1,19 @@
 import Store from "electron-store";
-
-type Schema = { readonly ffmpegPath: unknown };
+type Schema = {
+  readonly ffmpegPath?: string;
+  readonly ffprobePath?: string;
+};
 
 const schema = {
   ffmpegPath: {
     type: "string",
   },
+  ffprobePath: {
+    type: "string",
+  },
 } as const;
 
-export const store: Store<Schema> = new Store({
+export const store = new Store<Schema>({
   schema,
 });
 

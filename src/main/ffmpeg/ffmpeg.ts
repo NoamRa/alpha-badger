@@ -5,7 +5,7 @@ import type { FFmpegError, FFmpegCommandHandlers } from "./types";
 import type { FFmpegProcess } from "./processManager";
 import { parseProgress } from "./parseProgress";
 import { processManager, Reason, Status } from "./processManager";
-import { validateFFmpeg } from "./validateFFmpeg";
+import { validateFFmpeg } from "./validateFFpath";
 
 export const procManager = processManager();
 

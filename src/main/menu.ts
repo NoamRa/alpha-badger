@@ -1,6 +1,6 @@
 import type { MenuItemConstructorOptions } from "electron";
 import { app, Menu, shell } from "electron";
-import { promptFFmpegPath } from "./dialogs";
+import { promptFFmpegPath, promptFFprobePath } from "./dialogs";
 import { store } from "./store";
 
 const isMac = process.platform === "darwin";
@@ -82,6 +82,17 @@ export function setAppMenu(): void {
             console.log(ffmpegPath);
             store.set("ffmpegPath", ffmpegPath);
             console.log("set ffmpegPath at", store.get("ffmpegPath"));
+          }
+        },
+      },
+      {
+        label: "Set FFprobe Path",
+        click: async () => {
+          const ffprobePath = await promptFFprobePath();
+          if (ffprobePath) {
+            console.log(ffprobePath);
+            store.set("ffprobePath", ffprobePath);
+            console.log("set ffprobePath at", store.get("ffprobePath"));
           }
         },
       },

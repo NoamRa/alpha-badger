@@ -3,7 +3,8 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 const {
   runFFmpegCommand,
-  receive,
+  readMetadata,
+  listen,
   chooseFiles,
   chooseFolder,
   path,
@@ -25,12 +26,17 @@ filePickerButton.addEventListener("click", async () => {
     return;
   }
   // Handle duplicate files is left to the UI
-  filePaths.forEach((path: string) => {
-    filesManager.add(path);
+  filePaths.forEach((filePath: string) => {
+    filesManager.add(filePath);
     const filePathEl = document.createElement("li");
-    filePathEl.innerText = path;
+    filePathEl.innerText = filePath;
     files.appendChild(filePathEl);
   });
+
+  for (const filePath of filePaths) {
+    const metadata = await readMetadata(filePath);
+    console.log(metadata);
+  }
 });
 
 clearFilesButton.addEventListener("click", async () => {
@@ -78,24 +84,24 @@ renderButton.addEventListener("click", () => {
 
 // region status
 const statusEl: HTMLElement = document.getElementById("status");
-receive("ffmpeg-error", (error: unknown) => {
+listen("ffmpeg-error", (error: unknown) => {
   console.log("got error", error);
   statusEl.innerText = `Error \n${error}`;
 });
 
-receive("ffmpeg-start", (command: string) => {
+listen("ffmpeg-start", (command: string) => {
   console.log("got start", command);
   statusEl.innerText = `Working...`;
 });
 
-receive("ffmpeg-end", () => {
+listen("ffmpeg-end", () => {
   console.log("got end");
   statusEl.innerText = `Done`;
 });
 
 // region progress
 const progressEl: HTMLElement = document.getElementById("progress");
-receive("ffmpeg-progress", (progressStr: string) => {
+listen("ffmpeg-progress", (progressStr: string) => {
   console.log("got progress", progressStr);
   if (progressStr) {
     const progress = JSON.parse(progressStr);
@@ -118,7 +124,7 @@ stopButton.addEventListener("click", () => {
   stopAll();
 });
 
-receive("ffmpeg-codecData", (codecData: unknown) => {
+listen("ffmpeg-codecData", (codecData: unknown) => {
   console.log("got codecData", codecData);
 });
 // endregion

@@ -9,6 +9,7 @@ import type {
   FFmpegCommandHandlers,
 } from "./ffmpeg/types";
 import { executeFFmpegCommand, stopAll } from "./ffmpeg/ffmpeg";
+import { readMetadata } from "./ffmpeg/ffprobe";
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require("electron-squirrel-startup")) {
@@ -105,6 +106,13 @@ ipcMain.handle("command", (event, commandArguments: string): void => {
   console.log("about to executeFFmpegCommand \n", commandArguments);
   executeFFmpegCommand(commandArguments, options);
 });
+
+ipcMain.handle(
+  "read-metadata",
+  async (event, filePath: string): Promise<string> => {
+    return JSON.stringify(await readMetadata(filePath));
+  },
+);
 
 ipcMain.handle("stop-all", (): void => {
   stopAll();
