@@ -1,5 +1,7 @@
 /** See exposed methods on preload.ts */
 
+import type { FFprobeJSON } from "../main/ffmpeg/types";
+
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 const {
   runFFmpegCommand,
@@ -66,15 +68,15 @@ filePickerButton.addEventListener("click", async () => {
   }
 
   for (const filePath of filePaths) {
-    const metadata: any = JSON.parse(await readMetadata(filePath));
+    const metadata: FFprobeJSON = JSON.parse(await readMetadata(filePath));
     const videoStream = metadata?.streams?.find(
-      (stream: any) => stream?.codec_type === "video",
+      (stream) => stream?.codec_type === "video",
     );
     if (!videoStream) {
       continue;
     }
     const { width, r_frame_rate } = videoStream;
-    const [numerator, denominator] = r_frame_rate.split("/");
+    const [numerator, denominator] = r_frame_rate.split("/").map((n) => +n);
     const fps = Math.round(numerator / denominator);
 
     filesManager.set(filePath, {

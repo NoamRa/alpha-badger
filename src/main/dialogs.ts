@@ -64,10 +64,10 @@ function invalidFFpathError(
       "\nPlease download from https://ffmpeg.org/download.html and choose again",
   );
 }
-export function invalidFFmpegError(ffPath: string) {
+export function invalidFFmpegError(ffPath: string): void {
   invalidFFpathError(ffPath, "FFmpeg");
 }
-export function invalidFFprobeError(ffPath: string) {
+export function invalidFFprobeError(ffPath: string): void {
   invalidFFpathError(ffPath, "FFprobe");
 }
 
@@ -77,9 +77,9 @@ function missingFFpathError(binary: "FFmpeg" | "FFprobe"): void {
     "Please download FFmpeg from https://ffmpeg.org/download.html and set in the menu",
   );
 }
-export function missingFFmpegError() {
+export function missingFFmpegError(): void {
   missingFFpathError("FFmpeg");
 }
-export function missingFFprobeError() {
+export function missingFFprobeError(): void {
   missingFFpathError("FFprobe");
 }

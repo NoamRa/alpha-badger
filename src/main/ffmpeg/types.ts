@@ -48,6 +48,7 @@ export type Stream = {
   duration: number;
   nb_frames: number;
   disposition?: {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     [property: string]: any;
   };
   tags?: {
@@ -56,8 +57,10 @@ export type Stream = {
     handler_name: string;
     vendor_id?: string;
     encoder?: string;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     [property: string]: any;
   };
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [property: string]: any;
 };
 
@@ -78,6 +81,7 @@ export type Format = {
     compatible_brands: string;
     creation_time: string;
   };
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [property: string]: any;
 };
 
