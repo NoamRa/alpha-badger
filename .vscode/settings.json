@@ -4,11 +4,16 @@
   },
   "typescript.tsdk": "node_modules\\typescript\\lib",
   "cSpell.words": [
+    "endregion",
+    "ffprobe",
+    "GIPHY",
     "palettegen",
     "paletteinput",
     "paletteuse",
     "submenu",
+    "timecode",
     "togglefullscreen",
+    "typecheck",
     "unhide"
   ]
 }
