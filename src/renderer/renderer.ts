@@ -1,9 +1,12 @@
 /** See exposed methods on preload.ts */
 
+import type { FFprobeJSON } from "../main/ffmpeg/types";
+
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 const {
   runFFmpegCommand,
-  receive,
+  readMetadata,
+  listen,
   chooseFiles,
   chooseFolder,
   path,
@@ -17,20 +20,92 @@ const {
 const filePickerButton = document.getElementById("filePicker");
 const clearFilesButton = document.getElementById("clearFiles");
 const files = document.getElementById("files");
-const filesManager = new Set<string>([]);
+type FileMeta = {
+  filePath: string;
+  r_frame_rate: string;
+  fps: number;
+  width: number;
+  desiredFps: number;
+  desiredWidth: number;
+};
+
+function createNumericInput(
+  id: string,
+  name: string,
+  max: number,
+  onChange: (num: number) => void,
+): HTMLDivElement {
+  const container = document.createElement("div");
+
+  const label = document.createElement("label");
+  label.id = `${id}-label`;
+  label.htmlFor = name;
+  label.innerText = `${name}: `;
+  container.appendChild(label);
+
+  const input = document.createElement("input");
+  label.id = `${id}-input`;
+  input.type = "number";
+  input.name = name;
+  input.value = max.toString();
+  input.max = max.toString();
+  input.min = (0).toString();
+  input.onchange = (evt: Event) => {
+    const { valueAsNumber } = evt.target as HTMLInputElement;
+    onChange(valueAsNumber);
+  };
+  container.appendChild(input);
+
+  return container;
+}
+
+const filesManager = new Map<string, FileMeta>([]);
 filePickerButton.addEventListener("click", async () => {
   const filePaths: string[] = await chooseFiles();
   if (filePaths.length === 0) {
     console.log("user canceled");
     return;
   }
-  // Handle duplicate files is left to the UI
-  filePaths.forEach((path: string) => {
-    filesManager.add(path);
+
+  for (const filePath of filePaths) {
+    const metadata: FFprobeJSON = JSON.parse(await readMetadata(filePath));
+    const videoStream = metadata?.streams?.find(
+      (stream) => stream?.codec_type === "video",
+    );
+    if (!videoStream) {
+      continue;
+    }
+    const { width, r_frame_rate } = videoStream;
+    const [numerator, denominator] = r_frame_rate.split("/").map((n) => +n);
+    const fps = Math.round(numerator / denominator);
+
+    filesManager.set(filePath, {
+      filePath,
+      width,
+      r_frame_rate,
+      fps,
+      desiredWidth: width,
+      desiredFps: fps,
+    });
+
     const filePathEl = document.createElement("li");
-    filePathEl.innerText = path;
-    files.appendChild(filePathEl);
-  });
+    filePathEl.append(
+      filePath,
+      createNumericInput(filePath, "Width", width, (updatedWidth) => {
+        filesManager.set(filePath, {
+          ...filesManager.get(filePath),
+          desiredWidth: updatedWidth,
+        });
+      }),
+      createNumericInput(filePath, "Frames per second", fps, (updatedFps) => {
+        filesManager.set(filePath, {
+          ...filesManager.get(filePath),
+          desiredFps: updatedFps,
+        });
+      }),
+    );
+    files.append(filePathEl);
+  }
 });
 
 clearFilesButton.addEventListener("click", async () => {
@@ -53,13 +128,20 @@ folderPicker.addEventListener("click", async () => {
 // endregion
 
 // region render
-function buildCommand(input: string, outputDir: string): string {
+function buildCommand(
+  input: string,
+  width: number,
+  fps: number,
+  outputDir: string,
+): string {
   const destPath = path.join(outputDir, path.basename(input));
+  // Kudos to Collin Burger from GIPHY Engineering
+  // https://engineering.giphy.com/how-to-make-gifs-with-ffmpeg/
   return "".concat(
     `-i "${input}" `,
     `-filter_complex `.concat(
       `"`,
-      `[0:v] split [paletteinput][vid];`,
+      `[0:v] fps=${fps},scale=width=${width}:height=-1,split [paletteinput][vid];`,
       `[paletteinput] palettegen [palette];`,
       `[vid][palette] paletteuse`,
       `" `,
@@ -69,8 +151,13 @@ function buildCommand(input: string, outputDir: string): string {
 }
 const renderButton = document.getElementById("render");
 renderButton.addEventListener("click", () => {
-  const firstFile = [...filesManager][0];
-  const command = buildCommand(firstFile, destinationFolder);
+  const { filePath, desiredWidth, desiredFps } = [...filesManager.values()][0];
+  const command = buildCommand(
+    filePath,
+    desiredWidth,
+    desiredFps,
+    destinationFolder,
+  );
   console.log("renderer calling runFFmpegCommand\n", command);
   runFFmpegCommand(command);
 });
@@ -78,24 +165,24 @@ renderButton.addEventListener("click", () => {
 
 // region status
 const statusEl: HTMLElement = document.getElementById("status");
-receive("ffmpeg-error", (error: unknown) => {
+listen("ffmpeg-error", (error: unknown) => {
   console.log("got error", error);
   statusEl.innerText = `Error \n${error}`;
 });
 
-receive("ffmpeg-start", (command: string) => {
+listen("ffmpeg-start", (command: string) => {
   console.log("got start", command);
   statusEl.innerText = `Working...`;
 });
 
-receive("ffmpeg-end", () => {
+listen("ffmpeg-end", () => {
   console.log("got end");
   statusEl.innerText = `Done`;
 });
 
 // region progress
 const progressEl: HTMLElement = document.getElementById("progress");
-receive("ffmpeg-progress", (progressStr: string) => {
+listen("ffmpeg-progress", (progressStr: string) => {
   console.log("got progress", progressStr);
   if (progressStr) {
     const progress = JSON.parse(progressStr);
@@ -118,7 +205,7 @@ stopButton.addEventListener("click", () => {
   stopAll();
 });
 
-receive("ffmpeg-codecData", (codecData: unknown) => {
+listen("ffmpeg-codecData", (codecData: unknown) => {
   console.log("got codecData", codecData);
 });
 // endregion
