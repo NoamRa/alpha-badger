@@ -18,24 +18,91 @@ const {
 const filePickerButton = document.getElementById("filePicker");
 const clearFilesButton = document.getElementById("clearFiles");
 const files = document.getElementById("files");
-const filesManager = new Set<string>([]);
+type FileMeta = {
+  filePath: string;
+  r_frame_rate: string;
+  fps: number;
+  width: number;
+  desiredFps: number;
+  desiredWidth: number;
+};
+
+function createNumericInput(
+  id: string,
+  name: string,
+  max: number,
+  onChange: (num: number) => void,
+): HTMLDivElement {
+  const container = document.createElement("div");
+
+  const label = document.createElement("label");
+  label.id = `${id}-label`;
+  label.htmlFor = name;
+  label.innerText = `${name}: `;
+  container.appendChild(label);
+
+  const input = document.createElement("input");
+  label.id = `${id}-input`;
+  input.type = "number";
+  input.name = name;
+  input.value = max.toString();
+  input.max = max.toString();
+  input.min = (0).toString();
+  input.onchange = (evt: Event) => {
+    const { valueAsNumber } = evt.target as HTMLInputElement;
+    onChange(valueAsNumber);
+  };
+  container.appendChild(input);
+
+  return container;
+}
+
+const filesManager = new Map<string, FileMeta>([]);
 filePickerButton.addEventListener("click", async () => {
   const filePaths: string[] = await chooseFiles();
   if (filePaths.length === 0) {
     console.log("user canceled");
     return;
   }
-  // Handle duplicate files is left to the UI
-  filePaths.forEach((filePath: string) => {
-    filesManager.add(filePath);
-    const filePathEl = document.createElement("li");
-    filePathEl.innerText = filePath;
-    files.appendChild(filePathEl);
-  });
 
   for (const filePath of filePaths) {
-    const metadata = await readMetadata(filePath);
-    console.log(metadata);
+    const metadata: any = JSON.parse(await readMetadata(filePath));
+    const videoStream = metadata?.streams?.find(
+      (stream: any) => stream?.codec_type === "video",
+    );
+    if (!videoStream) {
+      continue;
+    }
+    const { width, r_frame_rate } = videoStream;
+    const [numerator, denominator] = r_frame_rate.split("/");
+    const fps = Math.round(numerator / denominator);
+
+    filesManager.set(filePath, {
+      filePath,
+      width,
+      r_frame_rate,
+      fps,
+      desiredWidth: width,
+      desiredFps: fps,
+    });
+
+    const filePathEl = document.createElement("li");
+    filePathEl.append(
+      filePath,
+      createNumericInput(filePath, "Width", width, (updatedWidth) => {
+        filesManager.set(filePath, {
+          ...filesManager.get(filePath),
+          desiredWidth: updatedWidth,
+        });
+      }),
+      createNumericInput(filePath, "Frames per second", fps, (updatedFps) => {
+        filesManager.set(filePath, {
+          ...filesManager.get(filePath),
+          desiredFps: updatedFps,
+        });
+      }),
+    );
+    files.append(filePathEl);
   }
 });
 
@@ -59,13 +126,18 @@ folderPicker.addEventListener("click", async () => {
 // endregion
 
 // region render
-function buildCommand(input: string, outputDir: string): string {
+function buildCommand(
+  input: string,
+  width: number,
+  fps: number,
+  outputDir: string,
+): string {
   const destPath = path.join(outputDir, path.basename(input));
   return "".concat(
     `-i "${input}" `,
     `-filter_complex `.concat(
       `"`,
-      `[0:v] split [paletteinput][vid];`,
+      `[0:v] fps=${fps},scale=width=${width}:height=-1,split [paletteinput][vid];`,
       `[paletteinput] palettegen [palette];`,
       `[vid][palette] paletteuse`,
       `" `,
@@ -75,8 +147,13 @@ function buildCommand(input: string, outputDir: string): string {
 }
 const renderButton = document.getElementById("render");
 renderButton.addEventListener("click", () => {
-  const firstFile = [...filesManager][0];
-  const command = buildCommand(firstFile, destinationFolder);
+  const { filePath, desiredWidth, desiredFps } = [...filesManager.values()][0];
+  const command = buildCommand(
+    filePath,
+    desiredWidth,
+    desiredFps,
+    destinationFolder,
+  );
   console.log("renderer calling runFFmpegCommand\n", command);
   runFFmpegCommand(command);
 });
