@@ -1,7 +1,4 @@
 /** See exposed methods on preload.ts */
-
-import type { FFprobeJSON } from "../main/ffmpeg/types";
-
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 const {
   runFFmpegCommand,
@@ -15,6 +12,16 @@ const {
   // At the moment it fails on runtime even though 'import type' should disappear after compile
 } = window.alphaBadgerApi;
 /* eslint-enable */
+
+// TODO find way to import type FFprobeJSON
+// At the moment it fails on runtime even though 'import type' should disappear after compile
+type FFprobeJSON = {
+  streams: Array<{
+    codec_type: string;
+    width: number;
+    r_frame_rate: string;
+  }>;
+};
 
 // region files to render
 const filePickerButton = document.getElementById("filePicker");

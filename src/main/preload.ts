@@ -30,7 +30,7 @@ const chooseFolder = (): Promise<string | undefined> => {
   return ipcRenderer.invoke("choose-folder");
 };
 
-const readMetadata = (filePath: string): Promise<unknown> => {
+const readMetadata = (filePath: string): Promise<string> => {
   return ipcRenderer.invoke("read-metadata", filePath);
 };
 
