@@ -12,9 +12,10 @@ export function parseProgress(progressLine: string): Progress {
   const progress: Progress = {};
   for (const keyValuePair of progressParts) {
     const [key, value] = keyValuePair.split("=", 2).map((v) => v.trim());
-    if (typeof value === "undefined") return null;
-    const valueAsNumber = +value;
-    progress[key] = Number.isNaN(valueAsNumber) ? value : valueAsNumber;
+    if (typeof value !== "undefined") {
+      const valueAsNumber = +value;
+      progress[key] = Number.isNaN(valueAsNumber) ? value : valueAsNumber;
+    }
   }
 
   return progress;

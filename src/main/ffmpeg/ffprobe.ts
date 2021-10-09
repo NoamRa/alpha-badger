@@ -7,7 +7,9 @@ import { store } from "../store";
 import { validateFFprobe } from "./validateFFpath";
 const exec = promisify(cp.exec);
 
-export async function readMetadata(filePath: string): Promise<FFprobeJSON> {
+export async function readMetadata(
+  filePath: string,
+): Promise<FFprobeJSON | void> {
   const ffprobePath = store.get("ffprobePath") as string;
   if (!ffprobePath) {
     missingFFprobeError();

@@ -21,7 +21,7 @@ export function setAppMenu(): void {
           { role: "quit" },
         ],
       }
-    : undefined;
+    : {};
 
   const fileMenu: MenuItemConstructorOptions = {
     label: "File",
@@ -136,7 +136,7 @@ export function setAppMenu(): void {
       alphaBadgerMenu,
       windowMenu,
       helpMenu,
-    ].filter(Boolean),
+    ].filter((menu) => Boolean(menu) || Boolean(Object.keys(menu).length)),
   );
   Menu.setApplicationMenu(menu);
 }
