@@ -136,7 +136,7 @@ export function setAppMenu(): void {
       alphaBadgerMenu,
       windowMenu,
       helpMenu,
-    ].filter(menu => Boolean(menu) || Boolean(Object.keys(menu).length)),
+    ].filter((menu) => Boolean(menu) || Boolean(Object.keys(menu).length)),
   );
   Menu.setApplicationMenu(menu);
 }
