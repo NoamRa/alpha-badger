@@ -123,7 +123,8 @@ clearFilesButton.addEventListener("click", async () => {
 
 // region destination folder
 const folderPicker: HTMLElement = document.getElementById("folderPicker")!;
-const destinationFolderView: HTMLElement = document.getElementById("destinationFolder")!;
+const destinationFolderView: HTMLElement =
+  document.getElementById("destinationFolder")!;
 let destinationFolder = "";
 folderPicker.addEventListener("click", async () => {
   const folder: string | undefined = await chooseFolder();
