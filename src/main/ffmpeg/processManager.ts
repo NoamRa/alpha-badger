@@ -53,7 +53,7 @@ export function processManager(): ProcessManager {
   };
 
   const get = (id: ID): FFmpegProcess => {
-    return _ffmpegProcesses.get(id);
+    return _ffmpegProcesses.get(id)!;
   };
 
   const remove = (id: ID): void => {
@@ -61,11 +61,11 @@ export function processManager(): ProcessManager {
   };
 
   const setStatus = (id: ID, status: Status) => {
-    _ffmpegProcesses.get(id).status = status;
+    get(id).status = status;
   };
 
   const setReason = (id: ID, reason: Reason) => {
-    _ffmpegProcesses.get(id).reason = reason;
+    get(id).reason = reason;
   };
 
   const getIds = (): ID[] => {

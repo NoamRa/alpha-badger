@@ -73,7 +73,7 @@ export async function executeFFmpegCommand(
   });
 
   // FFmpeg reports process on stderr 🤷🏽‍♀️
-  ffmpeg.stderr.on("data", (data) => {
+  ffmpeg.stderr!.on("data", (data) => {
     // raw data, always pushed
     handlers.handleData(data);
 

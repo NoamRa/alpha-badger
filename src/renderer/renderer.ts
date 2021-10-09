@@ -24,9 +24,9 @@ type FFprobeJSON = {
 };
 
 // region files to render
-const filePickerButton = document.getElementById("filePicker");
-const clearFilesButton = document.getElementById("clearFiles");
-const files = document.getElementById("files");
+const filePickerButton: HTMLElement = document.getElementById("filePicker")!;
+const clearFilesButton: HTMLElement = document.getElementById("clearFiles")!;
+const files: HTMLElement = document.getElementById("files")!;
 type FileMeta = {
   filePath: string;
   r_frame_rate: string;
@@ -66,7 +66,7 @@ function createNumericInput(
   return container;
 }
 
-const filesManager = new Map<string, FileMeta>([]);
+const filesManager = new Map<string, FileMeta>();
 filePickerButton.addEventListener("click", async () => {
   const filePaths: string[] = await chooseFiles();
   if (filePaths.length === 0) {
@@ -100,13 +100,13 @@ filePickerButton.addEventListener("click", async () => {
       filePath,
       createNumericInput(filePath, "Width", width, (updatedWidth) => {
         filesManager.set(filePath, {
-          ...filesManager.get(filePath),
+          ...filesManager.get(filePath)!,
           desiredWidth: updatedWidth,
         });
       }),
       createNumericInput(filePath, "Frames per second", fps, (updatedFps) => {
         filesManager.set(filePath, {
-          ...filesManager.get(filePath),
+          ...filesManager.get(filePath)!,
           desiredFps: updatedFps,
         });
       }),
@@ -122,8 +122,8 @@ clearFilesButton.addEventListener("click", async () => {
 // endregion
 
 // region destination folder
-const folderPicker = document.getElementById("folderPicker");
-const destinationFolderView = document.getElementById("destinationFolder");
+const folderPicker: HTMLElement = document.getElementById("folderPicker")!;
+const destinationFolderView: HTMLElement = document.getElementById("destinationFolder")!;
 let destinationFolder = "";
 folderPicker.addEventListener("click", async () => {
   const folder: string | undefined = await chooseFolder();
@@ -156,7 +156,7 @@ function buildCommand(
     `-y "${destPath}.gif"`,
   );
 }
-const renderButton = document.getElementById("render");
+const renderButton: HTMLElement = document.getElementById("render")!;
 renderButton.addEventListener("click", () => {
   const { filePath, desiredWidth, desiredFps } = [...filesManager.values()][0];
   const command = buildCommand(
@@ -171,7 +171,7 @@ renderButton.addEventListener("click", () => {
 // region events from rendering process
 
 // region status
-const statusEl: HTMLElement = document.getElementById("status");
+const statusEl: HTMLElement = document.getElementById("status")!;
 listen("ffmpeg-error", (error: unknown) => {
   console.log("got error", error);
   statusEl.innerText = `Error \n${error}`;
@@ -188,7 +188,7 @@ listen("ffmpeg-end", () => {
 });
 
 // region progress
-const progressEl: HTMLElement = document.getElementById("progress");
+const progressEl: HTMLElement = document.getElementById("progress")!;
 listen("ffmpeg-progress", (progressStr: string) => {
   console.log("got progress", progressStr);
   if (progressStr) {
@@ -206,7 +206,7 @@ listen("ffmpeg-progress", (progressStr: string) => {
 // endregion
 
 // region stop
-const stopButton = document.getElementById("stop");
+const stopButton: HTMLElement = document.getElementById("stop")!;
 stopButton.addEventListener("click", () => {
   console.log("sending stop signal");
   stopAll();
