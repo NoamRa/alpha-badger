@@ -4,7 +4,7 @@
 import * as path from "path";
 import { contextBridge, ipcRenderer } from "electron";
 
-export type Receiver = (...args: unknown[]) => void;
+export type Receiver = (...args: any[]) => void;
 
 const receive = (channel: string, receiver: Receiver): void => {
   ipcRenderer.on(channel, (event, ...args) => receiver(...args));
