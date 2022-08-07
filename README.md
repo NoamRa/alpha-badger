@@ -29,7 +29,6 @@ Alpha-Badger🦡 is built using Electron.
 
 - Start with cloning the repo and `npm install`
 - At the moment it's best to run `npm start` after each change
-- There's also `npm run develop` with will watch files, but only works on renderer side of the app
 - Use `npm run checks` to see everything is in order. (or individually run `typecheck` or `lint`. No tests yet...)
 
 ## Release process
