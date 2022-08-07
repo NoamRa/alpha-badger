@@ -4,10 +4,10 @@
 import * as path from "path";
 import { contextBridge, ipcRenderer } from "electron";
 
-type Listener = (...args: unknown[]) => unknown;
+export type Receiver = Function;
 
-const listen = (channel: string, listener: Listener): void => {
-  ipcRenderer.on(channel, (event, ...args) => listener(...args));
+const receive = (channel: string, receiver: Receiver): void => {
+  ipcRenderer.on(channel, (event, ...args) => receiver(...args));
 };
 
 const runFFmpegCommand = (command: string): void => {
@@ -38,7 +38,7 @@ export type AlphaBadgerApi = {
   alphaBadgerApi: {
     chooseFiles: typeof chooseFiles;
     chooseFolder: typeof chooseFolder;
-    listen: typeof listen;
+    receive: typeof receive;
     runFFmpegCommand: typeof runFFmpegCommand;
     stopAll: typeof stopAll;
     readMetadata: typeof readMetadata;
@@ -46,10 +46,10 @@ export type AlphaBadgerApi = {
   };
 };
 
-const alphaBadgerApi: AlphaBadgerApi["alphaBadgerApi"] = {
+export const alphaBadgerApi: AlphaBadgerApi["alphaBadgerApi"] = {
   chooseFiles,
   chooseFolder,
-  listen,
+  receive,
   runFFmpegCommand,
   stopAll,
   readMetadata,
