@@ -1,20 +1,16 @@
 {
   "name": "alpha-badger",
   "productName": "alpha-badger",
-  "version": "0.0.13",
+  "version": "0.0.14",
   "description": "Alpha Badger",
-  "main": "dist/main/index.js",
+  "main": ".webpack/main",
   "scripts": {
-    "copy-renderer": "copyfiles -f src/renderer/*.html src/renderer/*.css dist/renderer",
-    "start": "npm run copy-renderer && electron-forge start",
-    "develop": "npm run copy-renderer && concurrently \"tsc -w \" \"electron-forge start\"",
-    "develop-debug": "npm run copy-renderer && concurrently \"tsc -w \" \"electron-forge start --inspect-electron\"",
-    "tsc": "tsc",
+    "start": "electron-forge start",
     "package": "electron-forge package",
-    "make": "npm run tsc && npm run copy-renderer && electron-forge make",
+    "make": "electron-forge make",
     "make-clean": "rimraf dist && rimraf out && npm run make",
     "publish": "electron-forge publish",
-    "lint": "eslint --ext .ts,.tsx,.js,.tsx,.json ./src",
+    "lint": "eslint --ext .ts,.tsx,.js,.tsx,.json .",
     "lint:fix": "npm run lint -- --fix",
     "typecheck": "tsc --noEmit true",
     "checks": "npm run typecheck && npm run lint"
@@ -52,39 +48,66 @@
           "name": "@electron-forge/maker-rpm",
           "config": {}
         }
+      ],
+      "plugins": [
+        [
+          "@electron-forge/plugin-webpack",
+          {
+            "mainConfig": "./webpack.main.config.js",
+            "renderer": {
+              "config": "./webpack.renderer.config.js",
+              "entryPoints": [
+                {
+                  "name": "main_window",
+                  "html": "./src/renderer/index.html",
+                  "js": "./src/renderer/renderer.ts",
+                  "preload": {
+                    "js": "./src/main/preload.ts"
+                  }
+                }
+              ]
+            }
+          }
+        ]
       ]
     }
   },
   "devDependencies": {
-    "@electron-forge/cli": "6.0.0-beta.60",
-    "@electron-forge/maker-deb": "6.0.0-beta.60",
-    "@electron-forge/maker-dmg": "6.0.0-beta.60",
-    "@electron-forge/maker-rpm": "6.0.0-beta.60",
-    "@electron-forge/maker-squirrel": "6.0.0-beta.60",
-    "@electron-forge/maker-zip": "6.0.0-beta.60",
-    "@electron-forge/plugin-webpack": "6.0.0-beta.60",
-    "@electron-forge/publisher-github": "6.0.0-beta.60",
-    "@types/fs-extra": "9.0.12",
-    "@typescript-eslint/eslint-plugin": "4.30.0",
-    "@typescript-eslint/parser": "4.30.0",
-    "concurrently": "6.2.1",
-    "copyfiles": "2.4.1",
-    "css-loader": "6.2.0",
-    "electron": "13.1.9",
-    "eslint": "7.32.0",
+    "@babel/core": "7.18.9",
+    "@babel/preset-react": "7.18.6",
+    "@electron-forge/cli": "6.0.0-beta.65",
+    "@electron-forge/maker-deb": "6.0.0-beta.65",
+    "@electron-forge/maker-rpm": "6.0.0-beta.65",
+    "@electron-forge/maker-squirrel": "6.0.0-beta.65",
+    "@electron-forge/maker-zip": "6.0.0-beta.65",
+    "@electron-forge/plugin-webpack": "6.0.0-beta.65",
+    "@electron-forge/publisher-github": "6.0.0-beta.65",
+    "@types/fs-extra": "9.0.13",
+    "@types/react": "18.0.15",
+    "@types/react-dom": "18.0.6",
+    "@typescript-eslint/eslint-plugin": "5.32.0",
+    "@typescript-eslint/parser": "5.32.0",
+    "@vercel/webpack-asset-relocator-loader": "1.7.3",
+    "css-loader": "6.7.1",
+    "electron": "19.0.10",
+    "eslint": "8.21.0",
     "eslint-config-prettier": "8.3.0",
-    "eslint-plugin-import": "2.24.2",
-    "eslint-plugin-prettier": "4.0.0",
-    "fork-ts-checker-webpack-plugin": "6.3.3",
+    "eslint-plugin-import": "2.26.0",
+    "eslint-plugin-prettier": "4.2.1",
+    "eslint-plugin-react-hooks": "4.6.0",
+    "fork-ts-checker-webpack-plugin": "7.2.13",
     "node-loader": "2.0.0",
-    "prettier": "2.3.2",
-    "style-loader": "3.2.1",
-    "ts-loader": "9.2.5",
-    "typescript": "4.4.2"
+    "prettier": "2.7.1",
+    "style-loader": "3.3.1",
+    "ts-loader": "9.3.1",
+    "typescript": "4.7.4"
   },
   "dependencies": {
+    "@blueprintjs/core": "4.7.0",
     "electron-squirrel-startup": "1.0.0",
     "electron-store": "8.0.0",
-    "fs-extra": "10.0.0"
+    "fs-extra": "10.1.0",
+    "react": "18.2.0",
+    "react-dom": "18.2.0"
   }
 }

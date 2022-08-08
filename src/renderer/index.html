@@ -2,33 +2,21 @@
 <html>
   <head>
     <meta charset="UTF-8" />
-    <!-- meta CSP content - "script-src 'self'" allows
-         running both inline scripts and load local js files, 
-         eg <script src="myScript.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- 
+      meta CSP content - "script-src 'self'" allows
+      running both inline scripts and load local js files, 
+      eg <script src="myScript.js"></script>
+      consult https://electronjs.org/docs/tutorial/security
+      and https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP
     -->
-    <meta http-equiv="Content-Security-Policy" content="script-src 'self'" />
-    <link rel="stylesheet" href="./styles.css" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self'; style-src 'unsafe-inline';"
+    />
     <title>Alpha Badger</title>
   </head>
   <body>
-    <h2>Video to gif maker</h2>
-    <section id="files to use">
-      <div>
-        <button id="filePicker">choose file</button>
-        <button id="clearFiles">clear file list</button>
-      </div>
-      <ul id="files"></ul>
-    </div>
-    <section id="destination folder">
-      <button id="folderPicker">Choose destination folder</button>
-      <span id="destinationFolder"></span>
-    </div>
-    <div>
-      <!-- <code id="command-code" contenteditable="true">command will be here</code> -->
-      <button id="render">render</button> <button id="stop">stop</button>
-    </div>
-    <div id="status"></div>
-    <ul id="progress"></ul>
+    <div id="alpha-badger-app"></div>
   </body>
-  <script src="renderer.js"></script>
 </html>

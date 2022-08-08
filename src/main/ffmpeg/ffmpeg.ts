@@ -95,9 +95,9 @@ export async function executeFFmpegCommand(
 
 function stop(id: FFmpegProcess["id"]): void {
   const process = procManager.get(id).process;
-  process.kill();
+  process.kill("SIGTERM");
 }
 
 export function stopAll(): void {
-  procManager.getIds().forEach(stop);
+  procManager.getIds().forEach((id) => stop(id));
 }
