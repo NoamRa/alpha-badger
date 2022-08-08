@@ -1,3 +1,3 @@
-import './styles.css';
+import "./styles.css";
 
 import "./renderRoot.tsx";
