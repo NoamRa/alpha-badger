@@ -2,9 +2,9 @@ import { useState } from "react";
 
 export enum FFmpegStatus {
   "NotRunning" = "NotRunning",
-  "Start" = "Start",
+  "Working" = "Working",
   "Error" = "Error",
-  "End" = "End",
+  "Ended" = "Ended",
 }
 
 export type UseFFmpegStatus = {
@@ -21,12 +21,12 @@ export function useFFmpegStatus(): UseFFmpegStatus {
 
   alphaBadgerApi.receive("ffmpeg-start", (command: string) => {
     console.log("got start", command);
-    setStatus(FFmpegStatus.Start);
+    setStatus(FFmpegStatus.Working);
   });
 
   alphaBadgerApi.receive("ffmpeg-end", () => {
     console.log("got end");
-    setStatus(FFmpegStatus.End);
+    setStatus(FFmpegStatus.Ended);
   });
 
   return { status };

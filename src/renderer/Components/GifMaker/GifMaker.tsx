@@ -4,6 +4,9 @@ import { useMetadata } from "./useMetadata";
 import { renderFiles } from "./renderFiles";
 import { Status } from "./Status";
 import { FilesView } from "./FilesView";
+import { Button } from "@blueprintjs/core";
+import { useProgress } from "../../hooks/useProgress";
+import { FFmpegStatus, useFFmpegStatus } from "../../hooks/useFFmpegStatus";
 
 export function GifMaker(): JSX.Element {
   const { filesMeta, openFilePickerDialog, updateField, clearFiles } =
@@ -13,6 +16,9 @@ export function GifMaker(): JSX.Element {
     folder: destinationFolder,
     openFolderPicker: openDestinationFolderPicker,
   } = useFolderPicker();
+
+  const { status } = useFFmpegStatus();
+  const { progress } = useProgress();
 
   return (
     <>
@@ -24,26 +30,40 @@ export function GifMaker(): JSX.Element {
         clearFilesList={clearFiles}
       />
       <section id="destination-folder">
-        <button id="folderPicker" onClick={openDestinationFolderPicker}>
+        <Button id="folderPicker" onClick={openDestinationFolderPicker}>
           Choose destination folder
-        </button>
-        <span id="destinationFolder">{destinationFolder}</span>
+        </Button>
+        <span id="destinationFolder"> {destinationFolder}</span>
+        {Object.keys(filesMeta).length > 0 && destinationFolder !== "" && (
+          <ul>
+            {Object.values(filesMeta).map((file) => (
+              <li key={file.filePath}>
+                {alphaBadgerApi.path.join(
+                  destinationFolder,
+                  alphaBadgerApi.path.basename(file.filePath),
+                )}
+              </li>
+            ))}
+          </ul>
+        )}
       </section>
-      <button
+      <Button
         id="render"
         onClick={() => renderFiles(filesMeta, destinationFolder)}
       >
-        render
-      </button>
-      <button
-        id="stop"
-        onClick={() => {
-          alphaBadgerApi.stopAll();
-        }}
-      >
-        stop
-      </button>
-      <Status />
+        Convert files to gifs
+      </Button>
+      {status === FFmpegStatus.Working && (
+        <Button
+          id="stop"
+          onClick={() => {
+            alphaBadgerApi.stopAll();
+          }}
+        >
+          Stop
+        </Button>
+      )}
+      <Status progress={progress} status={status} />
     </>
   );
 }

@@ -1,6 +1,7 @@
+import type { ChildProcess } from "node:child_process";
+
 export type ID = number;
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type Process = any; // TODO
+export type Process = ChildProcess;
 
 export type Progress = Record<string, string | number>;
 export type FFmpegError = {
@@ -19,7 +20,7 @@ export type FFmpegCommandHandlers = {
   handleData: (data: string) => void;
 };
 
-//#region region FFprobe print_format json
+// #region region FFprobe print_format json
 // expect the unexpected
 export type Stream = {
   index: number;
@@ -90,4 +91,4 @@ export type FFprobeJSON = {
   format: Format;
 };
 
-//#endregion
+// #endregion

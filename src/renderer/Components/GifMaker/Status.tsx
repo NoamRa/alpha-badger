@@ -1,24 +1,27 @@
 import React from "react";
-import { useProgress } from "../../hooks/useProgress";
-import { FFmpegStatus, useFFmpegStatus } from "../../hooks/useFFmpegStatus";
+import type { UseProgress } from "../../hooks/useProgress";
+import { FFmpegStatus } from "../../hooks/useFFmpegStatus";
 
 function statusText(status: FFmpegStatus): string | undefined {
   switch (status) {
-    case FFmpegStatus.Start: {
+    case FFmpegStatus.Working: {
       return "Working...";
     }
     case FFmpegStatus.Error: {
       return "Error";
     }
-    case FFmpegStatus.End: {
+    case FFmpegStatus.Ended: {
       return "Done";
     }
   }
 }
 
-export function Status() {
-  const { status } = useFFmpegStatus();
-  const { progress } = useProgress();
+type StatusProps = {
+  status: FFmpegStatus;
+  progress: UseProgress["progress"];
+};
+
+export function Status({ status, progress }: StatusProps) {
   return (
     <section id="status">
       {statusText(status) && <div>{statusText(status)}</div>}

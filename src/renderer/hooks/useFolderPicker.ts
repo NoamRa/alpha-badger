@@ -1,19 +1,22 @@
-import { useState, useMemo } from "react";
+import { useState, useCallback } from "react";
 
 export type UseFolderPicker = {
   folder: string;
+  clearFolder: () => void;
   openFolderPicker: () => Promise<void>;
 };
 
 export function useFolderPicker(): UseFolderPicker {
   const [folder, setFolder] = useState<string>("");
 
-  const openFolderPicker = async () => {
+  const openFolderPicker = useCallback(async () => {
     const folder: string | undefined = await alphaBadgerApi.chooseFolder();
     if (folder) {
       setFolder(folder);
     }
-  };
+  }, []);
 
-  return { folder, openFolderPicker };
+  const clearFolder = useCallback(() => setFolder(""), []);
+
+  return { folder, openFolderPicker, clearFolder };
 }

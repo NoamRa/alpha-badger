@@ -58,9 +58,9 @@
               "config": "./webpack.renderer.config.js",
               "entryPoints": [
                 {
+                  "name": "main_window",
                   "html": "./src/renderer/index.html",
                   "js": "./src/renderer/renderer.ts",
-                  "name": "main_window",
                   "preload": {
                     "js": "./src/main/preload.ts"
                   }
@@ -103,6 +103,7 @@
     "typescript": "4.7.4"
   },
   "dependencies": {
+    "@blueprintjs/core": "4.7.0",
     "electron-squirrel-startup": "1.0.0",
     "electron-store": "8.0.0",
     "fs-extra": "10.1.0",

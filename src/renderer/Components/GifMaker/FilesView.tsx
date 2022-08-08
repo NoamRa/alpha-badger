@@ -1,5 +1,5 @@
 import React from "react";
-import { NumericInput } from "./NumericInput";
+import { Button, NumericInput } from "@blueprintjs/core";
 import type { UseMetadata } from "./useMetadata";
 
 type FilesPickerProps = {
@@ -18,35 +18,54 @@ export function FilesView({
   return (
     <section id="files to use">
       <div>
-        <button id="filePicker" onClick={selectFiles}>
+        <Button id="filePicker" onClick={selectFiles}>
           choose file
-        </button>
-        <button id="clearFiles" onClick={clearFilesList}>
+        </Button>
+        <Button id="clearFiles" onClick={clearFilesList}>
           clear file list
-        </button>
+        </Button>
       </div>
       <ul id="files">
         {Object.values(filesMeta).map((file) => (
           <li key={file.filePath}>
             {file.filePath}{" "}
-            <NumericInput
-              id={file.filePath}
-              name={"width"}
-              value={file.desiredWidth}
-              max={file.width}
-              onChange={(desiredWidth) => {
-                updateField(file.filePath, "desiredWidth", desiredWidth);
-              }}
-            />
-            <NumericInput
-              id={file.filePath}
-              name={"Frames per second"}
-              value={file.desiredFps}
-              max={file.fps}
-              onChange={(desiredFps) => {
-                updateField(file.filePath, "desiredFps", desiredFps);
-              }}
-            />
+            <ul>
+              <li>
+                Width:
+                <NumericInput
+                  id={file.filePath}
+                  name={"width"}
+                  value={file.desiredWidth}
+                  max={file.width}
+                  placeholder="Enter desired width..."
+                  onValueChange={(desiredWidth) => {
+                    updateField(
+                      file.filePath,
+                      "desiredWidth",
+                      Math.round(desiredWidth),
+                    );
+                  }}
+                  minorStepSize={1}
+                />
+              </li>
+              <li>
+                Frames per second:
+                <NumericInput
+                  id={file.filePath}
+                  name={"Frames per second"}
+                  value={file.desiredFps}
+                  max={file.fps}
+                  placeholder="Enter desired fps..."
+                  onValueChange={(desiredFps) => {
+                    updateField(
+                      file.filePath,
+                      "desiredFps",
+                      Math.round(desiredFps),
+                    );
+                  }}
+                />
+              </li>
+            </ul>
           </li>
         ))}
       </ul>

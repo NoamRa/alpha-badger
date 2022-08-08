@@ -1,6 +1,12 @@
 import { useState } from "react";
 
-export function useProgress() {
+type Progress = Record<string, string | number>;
+
+export type UseProgress = {
+  progress: Progress;
+};
+
+export function useProgress(): UseProgress {
   const [progress, setProgress] = useState({});
 
   alphaBadgerApi.receive("ffmpeg-progress", (progressStr: string) => {
