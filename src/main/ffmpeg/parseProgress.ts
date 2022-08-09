@@ -2,7 +2,7 @@ import { Progress } from "./types";
 
 export function parseProgress(progressLine: string): Progress {
   // Remove all spaces after = and trim.
-  // each progress part is a key-value pai. ex: "frame=123", "time=01:23:45.67"
+  // each progress part is a key-value pair. ex: "frame=123", "time=01:23:45.67"
   const progressParts: string[] = progressLine
     .replace(/=\s+/g, "=")
     .trim()
