@@ -28,7 +28,7 @@ You can either download [Alpha-Badger🦡 from "release" page](https://github.co
 Alpha-Badger🦡 is built using Electron.
 
 - Start with cloning the repo and `npm install`
-- At the moment it's best to run `npm start` after each change
+- Renderer / frontend side updates automatically or after refresh, but for main / backend it might be best to re-run `npm start` again
 - Use `npm run checks` to see everything is in order. (or individually run `typecheck` or `lint`. No tests yet...)
 
 ## Release process
