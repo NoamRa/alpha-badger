@@ -80,7 +80,7 @@ app.on("activate", () => {
 // #region ipcMain handlers
 // TODO refactor out or index
 ipcMain.handle("command", (event, commandArguments: string): void => {
-  const options: FFmpegCommandHandlers = {
+  const handlers: FFmpegCommandHandlers = {
     handleError: (error: FFmpegError): void => {
       mainWindow.webContents.send("ffmpeg-error", JSON.stringify(error));
     },
@@ -101,7 +101,7 @@ ipcMain.handle("command", (event, commandArguments: string): void => {
     },
   };
   console.log("about to executeFFmpegCommand \n", commandArguments);
-  executeFFmpegCommand(commandArguments, options);
+  executeFFmpegCommand(commandArguments, handlers);
 });
 
 ipcMain.handle(
