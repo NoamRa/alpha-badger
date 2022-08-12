@@ -1,16 +1,11 @@
 import * as React from "react";
 import { createRoot } from "react-dom/client";
-import { App } from "./Components/App";
+import { App } from "./App";
 import "./styles.css";
 
 function renderRoot(id: string) {
-  const container = document.getElementById(id);
-  if (container === null) {
-    console.error(`Failed to find element with ID '${id}'`);
-  } else {
-    const root = createRoot(container);
-    root.render(<App />);
-  }
+  const root = createRoot(document.getElementById(id) as HTMLElement);
+  root.render(<App />);
 }
 
 renderRoot("alpha-badger-app");

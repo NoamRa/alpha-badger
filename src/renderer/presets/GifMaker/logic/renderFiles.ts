@@ -1,4 +1,4 @@
-import type { FileMeta, FilesMetadata } from "./useMetadata";
+import type { FileMeta, FilesMetadata } from "../hooks/useMetadata";
 
 function buildCommand(
   input: string,
@@ -6,10 +6,6 @@ function buildCommand(
   fps: number,
   outputDir: string,
 ): string {
-  const destPath = alphaBadgerApi.path.join(
-    outputDir,
-    alphaBadgerApi.path.basename(input),
-  );
   // Kudos to Collin Burger from GIPHY Engineering
   // https://engineering.giphy.com/how-to-make-gifs-with-ffmpeg/
   return "".concat(
@@ -21,7 +17,7 @@ function buildCommand(
       `[vid][palette] paletteuse`,
       `" `,
     ),
-    `-y "${destPath}.gif"`,
+    `-y "${calcDestPath(outputDir, input)}"`,
   );
 }
 
@@ -41,8 +37,13 @@ export function renderFiles(
   filesMeta: FilesMetadata,
   destinationFolder: string,
 ) {
-  const files = [Object.values(filesMeta)[0]]; // for now just one file
+  const files = Object.values(filesMeta);
   for (const file of files) {
     processFile(file, destinationFolder);
   }
+}
+
+export function calcDestPath(outputDir: string, input: string): string {
+  const name = alphaBadgerApi.path.parse(input).name + ".gif";
+  return alphaBadgerApi.path.join(outputDir, name);
 }
