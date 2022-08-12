@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 type Progress = Record<string, string | number>;
 
@@ -9,13 +9,20 @@ export type UseProgress = {
 export function useProgress(): UseProgress {
   const [progress, setProgress] = useState({});
 
-  alphaBadgerApi.receive("ffmpeg-progress", (progressStr: string) => {
-    console.log("got progress", progressStr);
-    if (progressStr) {
-      const prog = JSON.parse(progressStr);
-      setProgress(prog);
-    }
-  });
+  useEffect(() => {
+    const progressId = alphaBadgerApi.onProgress((progress) => {
+      if (progress) {
+        const { id, ...prog } = progress;
+        console.log(`got progress for id: ${id}`);
+        console.log(prog);
+        setProgress(prog);
+      }
+    });
+
+    return () => {
+      alphaBadgerApi.removeListener(progressId);
+    };
+  }, []);
 
   return { progress };
 }

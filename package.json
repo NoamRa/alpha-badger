@@ -62,7 +62,7 @@
                   "html": "./src/renderer/index.html",
                   "js": "./src/renderer/renderer.ts",
                   "preload": {
-                    "js": "./src/main/preload.ts"
+                    "js": "./src/main/preload/preload.ts"
                   }
                 }
               ]
@@ -82,6 +82,7 @@
     "@electron-forge/maker-zip": "6.0.0-beta.65",
     "@electron-forge/plugin-webpack": "6.0.0-beta.65",
     "@electron-forge/publisher-github": "6.0.0-beta.65",
+    "@emotion/eslint-plugin": "^11.10.0",
     "@types/fs-extra": "9.0.13",
     "@types/react": "18.0.15",
     "@types/react-dom": "18.0.6",
@@ -104,6 +105,8 @@
   },
   "dependencies": {
     "@blueprintjs/core": "4.7.0",
+    "@emotion/react": "11.10.0",
+    "@emotion/styled": "11.10.0",
     "electron-squirrel-startup": "1.0.0",
     "electron-store": "8.0.0",
     "fs-extra": "10.1.0",

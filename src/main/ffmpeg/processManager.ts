@@ -1,4 +1,5 @@
-import type { ID, Process } from "./types";
+import type { ChildProcess } from "node:child_process";
+import { genShortId } from "../utils/generateId";
 
 export enum Status {
   Initial,
@@ -6,42 +7,34 @@ export enum Status {
   Stopped,
 }
 export enum Reason {
-  Initial,
-  Working,
-  Error,
-  Done,
+  Initial = "Initial",
+  Working = "Working",
+  Error = "Error",
+  Done = "Done",
 }
 
 export type FFmpegProcess = {
-  id: ID;
+  id: FFmpegId;
   command: string;
-  process: Process;
+  process: ChildProcess;
   status: Status;
   reason: Reason;
 };
 
 export type ProcessManager = {
-  add: (command: string, process: Process) => ID;
-  get: (id: ID) => FFmpegProcess;
-  remove: (id: ID) => void;
-  setStatus: (id: ID, status: Status) => void;
-  setReason: (id: ID, reason: Reason) => void;
-  getIds: () => ID[];
+  add: (command: string, process: ChildProcess) => FFmpegId;
+  get: (id: FFmpegId) => FFmpegProcess;
+  remove: (id: FFmpegId) => void;
+  setStatus: (id: FFmpegId, status: Status) => void;
+  setReason: (id: FFmpegId, reason: Reason) => void;
+  getIds: () => FFmpegId[];
 };
 
 export function processManager(): ProcessManager {
-  const getId: () => ID = (() => {
-    let id = 0;
-    return () => {
-      id += 1;
-      return id;
-    };
-  })();
+  const _ffmpegProcesses = new Map<FFmpegId, FFmpegProcess>();
 
-  const _ffmpegProcesses = new Map<ID, FFmpegProcess>();
-
-  const add = (command: string, process: Process): ID => {
-    const id = getId();
+  const add = (command: string, process: ChildProcess): FFmpegId => {
+    const id = genShortId("ffmpeg");
     _ffmpegProcesses.set(id, {
       id,
       command,
@@ -52,23 +45,23 @@ export function processManager(): ProcessManager {
     return id;
   };
 
-  const get = (id: ID): FFmpegProcess => {
+  const get = (id: FFmpegId): FFmpegProcess => {
     return _ffmpegProcesses.get(id)!;
   };
 
-  const remove = (id: ID): void => {
+  const remove = (id: FFmpegId): void => {
     _ffmpegProcesses.delete(id);
   };
 
-  const setStatus = (id: ID, status: Status) => {
+  const setStatus = (id: FFmpegId, status: Status) => {
     get(id).status = status;
   };
 
-  const setReason = (id: ID, reason: Reason) => {
+  const setReason = (id: FFmpegId, reason: Reason) => {
     get(id).reason = reason;
   };
 
-  const getIds = (): ID[] => {
+  const getIds = (): FFmpegId[] => {
     return [..._ffmpegProcesses.keys()];
   };
 

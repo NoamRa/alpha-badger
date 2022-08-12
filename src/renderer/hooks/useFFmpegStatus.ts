@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export enum FFmpegStatus {
   "NotRunning" = "NotRunning",
@@ -14,20 +14,29 @@ export type UseFFmpegStatus = {
 export function useFFmpegStatus(): UseFFmpegStatus {
   const [status, setStatus] = useState<FFmpegStatus>(FFmpegStatus.NotRunning);
 
-  alphaBadgerApi.receive("ffmpeg-error", (error: unknown) => {
-    console.log("got error", error);
-    setStatus(FFmpegStatus.Error);
-  });
+  useEffect(() => {
+    const errorId = alphaBadgerApi.onError((error) => {
+      console.log(
+        `got error for id: ${error.id}, error: ${JSON.stringify(error)}`,
+      );
+      setStatus(FFmpegStatus.Error);
+    });
+    const startId = alphaBadgerApi.onStart(({ id, command }) => {
+      console.log(`got start for id: ${id}, command: ${command}`);
+      setStatus(FFmpegStatus.Working);
+    });
 
-  alphaBadgerApi.receive("ffmpeg-start", (command: string) => {
-    console.log("got start", command);
-    setStatus(FFmpegStatus.Working);
-  });
+    const endId = alphaBadgerApi.onEnd(({ id, reason }) => {
+      console.log(`got end for id: ${id}, reason: ${reason}`);
+      setStatus(FFmpegStatus.Ended);
+    });
 
-  alphaBadgerApi.receive("ffmpeg-end", () => {
-    console.log("got end");
-    setStatus(FFmpegStatus.Ended);
-  });
+    return () => {
+      alphaBadgerApi.removeListener(errorId);
+      alphaBadgerApi.removeListener(startId);
+      alphaBadgerApi.removeListener(endId);
+    };
+  }, []);
 
   return { status };
 }

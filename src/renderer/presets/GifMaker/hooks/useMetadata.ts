@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useFilesPicker } from "../../hooks/useFilesPicker";
+import { useFilesPicker } from "../../../hooks/useFilesPicker";
 
 type FFprobeJSON = {
   streams: Array<{
@@ -22,6 +22,7 @@ export type FilesMetadata = Record<string, FileMeta>;
 
 export type UseMetadata = {
   filesMeta: FilesMetadata;
+  loading: boolean;
   openFilePickerDialog: () => Promise<void>;
   updateField: <K extends keyof FileMeta>(
     filePath: string,
@@ -32,15 +33,24 @@ export type UseMetadata = {
 };
 
 export function useMetadata(): UseMetadata {
+  const [loadingCount, setLoadingCount] = useState<number>(0);
   const { filePaths, openFilePickerDialog, clearFiles } = useFilesPicker();
   const [filesMeta, setFilesMeta] = useState<FilesMetadata>({});
 
+  const decrementLoading = () => setLoadingCount((lc) => lc - 1);
+
   useEffect(() => {
     async function readFilesMetadata(filePaths: string[]) {
+      setLoadingCount(filePaths.length);
       for (const filePath of filePaths) {
-        const metadata: FFprobeJSON = JSON.parse(
-          await alphaBadgerApi.readMetadata(filePath),
-        );
+        let metadata: FFprobeJSON;
+        try {
+          metadata = JSON.parse(await alphaBadgerApi.readMetadata(filePath));
+        } catch (err) {
+          console.error(err); // TODO handle
+          decrementLoading();
+          continue;
+        }
         const videoStream = metadata?.streams?.find(
           (stream) => stream?.codec_type === "video",
         );
@@ -59,9 +69,10 @@ export function useMetadata(): UseMetadata {
             r_frame_rate,
             fps,
             desiredWidth: width,
-            desiredFps: fps,
+            desiredFps: 12, // initial value for FPS
           },
         }));
+        decrementLoading();
       }
     }
 
@@ -83,6 +94,7 @@ export function useMetadata(): UseMetadata {
 
   return {
     filesMeta,
+    loading: loadingCount > 0,
     openFilePickerDialog,
     updateField,
     clearFiles: () => {
