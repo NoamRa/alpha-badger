@@ -62,7 +62,7 @@
                   "html": "./src/renderer/index.html",
                   "js": "./src/renderer/renderer.ts",
                   "preload": {
-                    "js": "./src/main/preload.ts"
+                    "js": "./src/main/preload/preload.ts"
                   }
                 }
               ]

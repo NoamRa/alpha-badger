@@ -1,26 +1,24 @@
-import type { ChildProcess } from "node:child_process";
-
-export type ID = number;
-export type Process = ChildProcess;
-
-export type Progress = Record<string, string | number>;
-export type FFmpegError = {
-  id: ID;
+export type FFmpegError = WithFFmpegId<{
   message: string;
   command: string;
   stack?: string;
-};
+}>;
+export type FFmpegStart = WithFFmpegId<{ command: string }>;
+export type FFmpegEnd = WithFFmpegId<{ reason?: string }>;
+export type FFmpegProgress = WithFFmpegId<Record<string, string | number>>;
+export type FFmpegCodecData = WithFFmpegId<{ codecData: string }>;
+export type FFmpegData = WithFFmpegId<{ data: string }>;
 
 export type FFmpegCommandHandlers = {
-  handleError: (err: FFmpegError) => void;
-  handleStart: (commandLine: string) => void;
-  handleEnd: () => void;
-  handleProgress: (progress: Progress) => void;
-  handleCodecData: (data: unknown) => void;
-  handleData: (data: string) => void;
+  handleError: (error: FFmpegError) => void;
+  handleStart: (start: FFmpegStart) => void;
+  handleEnd: (end: FFmpegEnd) => void;
+  handleProgress: (progress: FFmpegProgress) => void;
+  handleCodecData: (codecData: FFmpegCodecData) => void;
+  handleData: (data: FFmpegData) => void;
 };
 
-// #region region FFprobe print_format json
+// #region FFprobe print_format json
 // expect the unexpected
 export type Stream = {
   index: number;
