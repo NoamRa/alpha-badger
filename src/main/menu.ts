@@ -124,6 +124,14 @@ export function setAppMenu(): void {
           shell.openExternal("https://github.com/NoamRa/alpha-badger");
         },
       },
+      {
+        label: `Version ${app.getVersion()}`,
+        click: () => {
+          shell.openExternal(
+            `https://github.com/NoamRa/alpha-badger/releases/tag/v${app.getVersion()}`,
+          );
+        },
+      },
     ],
   };
 
