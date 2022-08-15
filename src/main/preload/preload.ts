@@ -13,47 +13,48 @@ import type {
 } from "../ffmpeg/types";
 import type { Listener, ListenerId } from "./listenerManager";
 import { addListener, removeListener } from "./listenerManager";
+import { Channel } from "./channels";
 
 const onError = (listener: Listener<FFmpegError>): ListenerId =>
-  addListener("ffmpeg-error", listener);
+  addListener(Channel.FFmpeg.Error, listener);
 
 const onStart = (listener: Listener<FFmpegStart>): ListenerId =>
-  addListener("ffmpeg-start", listener);
+  addListener(Channel.FFmpeg.Start, listener);
 
 const onEnd = (listener: Listener<FFmpegEnd>): ListenerId =>
-  addListener("ffmpeg-end", listener);
+  addListener(Channel.FFmpeg.End, listener);
 
 const onProgress = (listener: Listener<FFmpegProgress>): ListenerId =>
-  addListener("ffmpeg-progress", listener);
+  addListener(Channel.FFmpeg.Progress, listener);
 
 const onData = (listener: Listener<FFmpegError>): ListenerId =>
-  addListener("ffmpeg-data", listener);
+  addListener(Channel.FFmpeg.Data, listener);
 
 const onCodecData = (listener: Listener<FFmpegCodecData>): ListenerId =>
-  addListener("ffmpeg-codecData", listener);
+  addListener(Channel.FFmpeg.CodecData, listener);
 
 const invokeRunFFmpegCommand = (command: string): void => {
   console.log("about to invoke command with", command);
-  ipcRenderer.invoke("command", command);
+  ipcRenderer.invoke(Channel.Command, command);
 };
 
 const invokeReadMetadata = (filePath: string): Promise<string> => {
-  return ipcRenderer.invoke("read-metadata", filePath);
+  return ipcRenderer.invoke(Channel.ReadMetadata, filePath);
 };
 
 const invokeStopAll = (): void => {
   console.log("about to stop all FFmpeg processes");
-  ipcRenderer.invoke("stop-all");
+  ipcRenderer.invoke(Channel.StopAll);
 };
 
 const invokeChooseFiles = (
   filters: Electron.FileFilter[] = [{ name: "All Files", extensions: ["*"] }],
 ): Promise<string[]> => {
-  return ipcRenderer.invoke("choose-files", filters);
+  return ipcRenderer.invoke(Channel.ChooseFiles, filters);
 };
 
 const invokeChooseFolder = (): Promise<string | undefined> => {
-  return ipcRenderer.invoke("choose-folder");
+  return ipcRenderer.invoke(Channel.ChooseFolder);
 };
 
 export const alphaBadgerApi = {
