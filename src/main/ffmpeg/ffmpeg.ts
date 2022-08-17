@@ -95,13 +95,7 @@ export async function executeFFmpegCommand(
 
     // progress
     if (data.includes("frame=")) {
-      const progress = data
-        .split(new RegExp(`\r\n|\r|\n`))
-        .reduce(
-          (prog: object, line: string) => ({ ...prog, ...parseProgress(line) }),
-          {},
-        );
-      handlers.handleProgress({ id, ...progress });
+      handlers.handleProgress({ id, progress: parseProgress(data) });
     }
   });
 }

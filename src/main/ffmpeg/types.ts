@@ -3,9 +3,10 @@ export type FFmpegError = WithFFmpegId<{
   command: string;
   stack?: string;
 }>;
+export type Progress = Record<string, string | number>;
 export type FFmpegStart = WithFFmpegId<{ command: string }>;
 export type FFmpegEnd = WithFFmpegId<{ reason?: string }>;
-export type FFmpegProgress = WithFFmpegId<Record<string, string | number>>;
+export type FFmpegProgress = WithFFmpegId<{ progress: Progress }>;
 export type FFmpegCodecData = WithFFmpegId<{ codecData: string }>;
 export type FFmpegData = WithFFmpegId<{ data: string }>;
 
