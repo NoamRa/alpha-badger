@@ -1,7 +1,7 @@
 /**
  * This file serves as API between main process and renderers.
  */
-import * as path from "path";
+import path from "node:path";
 import { contextBridge, ipcRenderer } from "electron";
 
 import type {

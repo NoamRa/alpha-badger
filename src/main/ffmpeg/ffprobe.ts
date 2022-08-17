@@ -1,5 +1,5 @@
-import { promisify } from "util";
-import * as cp from "child_process";
+import { promisify } from "node:util";
+import cp from "node:child_process";
 import type { FFprobeJSON } from "./types";
 import { invalidFFprobeError, missingFFprobeError } from "../dialogs";
 import { store } from "../store";

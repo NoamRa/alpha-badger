@@ -17,7 +17,13 @@
   "rules": {
     "@typescript-eslint/no-explicit-any": "error",
     "prettier/prettier": "error",
-    "react-hooks/exhaustive-deps": "off"
+    "react-hooks/exhaustive-deps": "off",
+    "import/no-default-export": "error",
+    "import/no-named-as-default": "error",
+    "import/no-named-as-default-member": "error",
+    "import/export": "error",
+    "import/no-cycle": "error",
+    "import/no-namespace": "error"
   },
   "ignorePatterns": ["build", "dist", "node_modules", "out", "webpack"]
 }
