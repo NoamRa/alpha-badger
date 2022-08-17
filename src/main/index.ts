@@ -76,7 +76,7 @@ app.on("activate", () => {
 // code. You can also put them in separate files and import them here.
 
 // #region ipcMain handlers
-ipcMain.handle("command", (event, commandArguments: string): void => {
+ipcMain.handle(Channel.Command, (event, commandArguments: string): void => {
   const handlers: FFmpegCommandHandlers = {
     handleError: (error): void => {
       mainWindow.webContents.send(Channel.FFmpeg.Error, error);
