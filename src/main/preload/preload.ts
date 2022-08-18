@@ -14,6 +14,7 @@ import type {
 import type { Listener, ListenerId } from "./listenerManager";
 import { addListener, removeListener } from "./listenerManager";
 import { Channel } from "./channels";
+import { store } from "../store";
 
 const onError = (listener: Listener<FFmpegError>): ListenerId =>
   addListener(Channel.FFmpeg.Error, listener);
@@ -78,6 +79,10 @@ export const alphaBadgerApi = {
   onData,
   onCodecData,
   removeListener,
+
+  // preset
+  getSelectedPresetIndex: store.getSelectedPresetIndex,
+  setSelectedPresetIndex: store.setSelectedPresetIndex,
 };
 
 export type AlphaBadgerApi = {

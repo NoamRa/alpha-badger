@@ -13,7 +13,7 @@ export async function executeFFmpegCommand(
   command: string,
   handlers: FFmpegCommandHandlers,
 ): Promise<void> {
-  const ffmpegPath = store.get("ffmpegPath") as string;
+  const ffmpegPath = store.getFFmpegPath();
   if (!ffmpegPath) {
     handlers.handleError({
       id: "-1",
@@ -32,7 +32,7 @@ export async function executeFFmpegCommand(
     invalidFFmpegError(ffmpegPath);
   }
 
-  const ffmpegCommand = `${store.get("ffmpegPath")} ${command}`;
+  const ffmpegCommand = `${ffmpegPath} ${command}`;
 
   const ffmpeg = exec(ffmpegCommand);
 

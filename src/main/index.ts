@@ -1,5 +1,5 @@
 import { app, BrowserWindow, ipcMain, dialog } from "electron";
-import { store, describeStoreContent } from "./store";
+import { describeStoreContent } from "./store";
 import { setAppMenu } from "./menu";
 import type { FFmpegCommandHandlers } from "./ffmpeg/types";
 import { executeFFmpegCommand, stopAll } from "./ffmpeg/ffmpeg";
@@ -18,7 +18,7 @@ if (require("electron-squirrel-startup")) {
   app.quit();
 }
 
-describeStoreContent(store);
+describeStoreContent();
 
 let mainWindow: BrowserWindow;
 

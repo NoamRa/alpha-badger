@@ -12,4 +12,7 @@ export const Channel = {
   StopAll: "stop-all",
   ChooseFiles: "choose-files",
   ChooseFolder: "choose-folder",
+
+  GetSelectedPresetIndex: "getSelectedPresetIndex",
+  SetSelectedPresetIndex: "setSelectedPresetIndex",
 };
