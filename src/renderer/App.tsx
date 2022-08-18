@@ -5,9 +5,17 @@ import { presets, presetOptions } from "./presets";
 import { FormGroup, HTMLSelect } from "@blueprintjs/core";
 
 export function App() {
-  const [presetIndex, setPresetIndex] = useState(0);
+  const [presetIndex, setPresetIndex] = useState(
+    alphaBadgerApi.getSelectedPresetIndex,
+  );
 
   const SelectedPreset = presets[presetIndex].component;
+
+  const handlePresetChange = (evt: React.ChangeEvent<HTMLSelectElement>) => {
+    const presetIndex = parseInt(evt.target.value);
+    setPresetIndex(presetIndex);
+    alphaBadgerApi.setSelectedPresetIndex(presetIndex);
+  };
 
   return (
     <DefaultErrorBoundary>
@@ -18,10 +26,9 @@ export function App() {
             <HTMLSelect
               id="preset-select"
               fill
-              onChange={(evt) => {
-                setPresetIndex(parseInt(evt.target.value));
-              }}
+              onChange={handlePresetChange}
               options={presetOptions}
+              value={presetIndex.toString()}
             />
           </FormGroup>
         </Nav>
