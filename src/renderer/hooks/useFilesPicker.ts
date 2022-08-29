@@ -4,7 +4,7 @@ type FilePath = string;
 
 export type UseFilesPicker = {
   filePaths: FilePath[];
-  openFilePickerDialog: () => Promise<void>;
+  openFilesPickerDialog: () => Promise<void>;
   clearFiles: () => void;
 };
 
@@ -12,7 +12,7 @@ export function useFilesPicker(): UseFilesPicker {
   const [filePaths, setFiles] = useState<string[]>([]);
 
   const actions = useMemo(() => {
-    const openFilePickerDialog = async () => {
+    const openFilesPickerDialog = async () => {
       const filePaths: string[] = await alphaBadgerApi.chooseFiles();
       if (filePaths.length === 0) {
         console.log("user canceled file selection");
@@ -26,7 +26,7 @@ export function useFilesPicker(): UseFilesPicker {
     };
 
     return {
-      openFilePickerDialog,
+      openFilesPickerDialog,
       clearFiles,
     };
   }, []);
