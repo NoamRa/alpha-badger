@@ -1,15 +1,15 @@
-import { Button } from "@blueprintjs/core";
 import React from "react";
+import { Button } from "@blueprintjs/core";
 import { FilePicker } from "../../components/FilePicker";
 import { Status } from "../../components/Status";
 import {
+  FFmpegStatus,
   useFolderPicker,
   useFilePicker,
   useFFmpegStatus,
   useProgress,
   useCodecData,
 } from "../../hooks";
-import { FFmpegStatus } from "../../hooks";
 import { compare } from "./logic/renderFiles";
 
 export function CompareVideos() {

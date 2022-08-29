@@ -1,4 +1,4 @@
-import { Button, FormGroup, InputGroup, Label } from "@blueprintjs/core";
+import { Button, FormGroup, InputGroup } from "@blueprintjs/core";
 import styled from "@emotion/styled";
 import React from "react";
 import type { UseFilePicker } from "../hooks";
@@ -24,6 +24,10 @@ export function FilePicker({
   width = "300px",
   disabled = false,
 }: FilePickerProps) {
+  const handleClick = () => {
+    filePath && selectFile();
+  };
+
   return (
     <StyledFormGroup
       label={label}
@@ -35,7 +39,7 @@ export function FilePicker({
         id={id}
         value={filePath}
         placeholder={placeholder}
-        onClick={filePath ? noop : selectFile}
+        onClick={handleClick}
         asyncControl
         rightElement={
           <>
@@ -51,8 +55,6 @@ export function FilePicker({
     </StyledFormGroup>
   );
 }
-
-function noop() {}
 
 const StyledFormGroup = styled(FormGroup)`
   width: ${({ width }: { width: string }) => width};
