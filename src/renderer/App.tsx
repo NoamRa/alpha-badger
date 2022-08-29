@@ -9,7 +9,8 @@ export function App() {
     alphaBadgerApi.getSelectedPresetIndex,
   );
 
-  const SelectedPreset = presets[presetIndex].component;
+  const selectedPreset = presets[presetIndex];
+  const SelectedPresetComponent = selectedPreset.component;
 
   const handlePresetChange = (evt: React.ChangeEvent<HTMLSelectElement>) => {
     const presetIndex = parseInt(evt.target.value);
@@ -22,7 +23,7 @@ export function App() {
       <Layout>
         <Nav>
           <h2>Alpha-Badger🦡</h2>
-          <FormGroup label="Choose preset" labelFor="preset-select">
+          <FormGroup label="Choose preset:" labelFor="preset-select">
             <HTMLSelect
               id="preset-select"
               fill
@@ -31,9 +32,10 @@ export function App() {
               value={presetIndex.toString()}
             />
           </FormGroup>
+          {selectedPreset.description}
         </Nav>
         <Padding>
-          <SelectedPreset />
+          <SelectedPresetComponent />
         </Padding>
       </Layout>
     </DefaultErrorBoundary>
