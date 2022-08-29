@@ -103,14 +103,31 @@ ipcMain.handle(Channel.Command, (event, commandArguments: string): void => {
 
 ipcMain.handle(
   Channel.ReadMetadata,
-  async (event, filePath: string): Promise<string> => {
-    return JSON.stringify(await readMetadata(filePath));
+  async (event, filePath: string): Promise<FFprobeJSON> => {
+    return await readMetadata(filePath);
   },
 );
 
 ipcMain.handle(Channel.StopAll, (): void => {
   stopAll();
 });
+
+ipcMain.handle(
+  Channel.ChooseFile,
+  async (event, filters: Electron.FileFilter[]): Promise<string> => {
+    const result = await dialog.showOpenDialog(mainWindow, {
+      properties: ["openFile"],
+      filters,
+    });
+    console.log(
+      result.canceled
+        ? "user canceled file selection"
+        : `user selected file '${result.filePaths[0]}'`,
+    );
+
+    return result.filePaths[0];
+  },
+);
 
 ipcMain.handle(
   Channel.ChooseFiles,
@@ -121,7 +138,7 @@ ipcMain.handle(
     });
     console.log(
       result.canceled
-        ? "user canceled file selection"
+        ? "user canceled files selection"
         : `user selected files\n ${JSON.stringify(result.filePaths, null, 2)}`,
     );
 

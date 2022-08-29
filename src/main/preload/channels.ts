@@ -10,6 +10,7 @@ export const Channel = {
   },
   ReadMetadata: "read-metadata",
   StopAll: "stop-all",
+  ChooseFile: "choose-file",
   ChooseFiles: "choose-files",
   ChooseFolder: "choose-folder",
 

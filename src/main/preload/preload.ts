@@ -10,6 +10,7 @@ import type {
   FFmpegError,
   FFmpegProgress,
   FFmpegStart,
+  FFprobeJSON,
 } from "../ffmpeg/types";
 import type { Listener, ListenerId } from "./listenerManager";
 import { addListener, removeListener } from "./listenerManager";
@@ -39,13 +40,19 @@ const invokeRunFFmpegCommand = (command: string): void => {
   ipcRenderer.invoke(Channel.Command, command);
 };
 
-const invokeReadMetadata = (filePath: string): Promise<string> => {
+const invokeReadMetadata = (filePath: string): Promise<FFprobeJSON> => {
   return ipcRenderer.invoke(Channel.ReadMetadata, filePath);
 };
 
 const invokeStopAll = (): void => {
   console.log("about to stop all FFmpeg processes");
   ipcRenderer.invoke(Channel.StopAll);
+};
+
+const invokeChooseFile = (
+  filters: Electron.FileFilter[] = [{ name: "All Files", extensions: ["*"] }],
+): Promise<string> => {
+  return ipcRenderer.invoke(Channel.ChooseFile, filters);
 };
 
 const invokeChooseFiles = (
@@ -63,6 +70,7 @@ export const alphaBadgerApi = {
   path: path,
 
   // file and related
+  chooseFile: invokeChooseFile,
   chooseFiles: invokeChooseFiles,
   chooseFolder: invokeChooseFolder,
 
