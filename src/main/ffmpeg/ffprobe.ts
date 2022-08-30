@@ -1,24 +1,21 @@
-import { promisify } from "util";
-import * as cp from "child_process";
-import type { FFprobeJSON } from "./types";
+import { promisify } from "node:util";
+import cp from "node:child_process";
 import { invalidFFprobeError, missingFFprobeError } from "../dialogs";
-import { store } from "../store";
 
 import { validateFFprobe } from "./validateFFpath";
+import { store } from "../store";
 const exec = promisify(cp.exec);
 
-export async function readMetadata(
-  filePath: string,
-): Promise<FFprobeJSON | void> {
-  const ffprobePath = store.get("ffprobePath") as string;
+export async function readMetadata(filePath: string): Promise<FFprobeJSON> {
+  const ffprobePath = store.getFFprobePath();
   if (!ffprobePath) {
     missingFFprobeError();
-    return;
+    throw new Error("ffprobe is missing");
   }
 
   if (!(await validateFFprobe(ffprobePath))) {
     invalidFFprobeError(ffprobePath);
-    return;
+    throw new Error("ffprobe is invalid");
   }
 
   const { stdout } = await exec(

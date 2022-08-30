@@ -23,7 +23,7 @@ export type FilesMetadata = Record<string, FileMeta>;
 export type UseMetadata = {
   filesMeta: FilesMetadata;
   loading: boolean;
-  openFilePickerDialog: () => Promise<void>;
+  openFilesPickerDialog: () => Promise<void>;
   updateField: <K extends keyof FileMeta>(
     filePath: string,
     key: K,
@@ -34,7 +34,7 @@ export type UseMetadata = {
 
 export function useMetadata(): UseMetadata {
   const [loadingCount, setLoadingCount] = useState<number>(0);
-  const { filePaths, openFilePickerDialog, clearFiles } = useFilesPicker();
+  const { filePaths, openFilesPickerDialog, clearFiles } = useFilesPicker();
   const [filesMeta, setFilesMeta] = useState<FilesMetadata>({});
 
   const decrementLoading = () => setLoadingCount((lc) => lc - 1);
@@ -45,7 +45,7 @@ export function useMetadata(): UseMetadata {
       for (const filePath of filePaths) {
         let metadata: FFprobeJSON;
         try {
-          metadata = JSON.parse(await alphaBadgerApi.readMetadata(filePath));
+          metadata = await alphaBadgerApi.readMetadata(filePath);
         } catch (err) {
           console.error(err); // TODO handle
           decrementLoading();
@@ -95,7 +95,7 @@ export function useMetadata(): UseMetadata {
   return {
     filesMeta,
     loading: loadingCount > 0,
-    openFilePickerDialog,
+    openFilesPickerDialog,
     updateField,
     clearFiles: () => {
       clearFiles();

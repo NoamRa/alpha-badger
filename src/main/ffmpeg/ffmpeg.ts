@@ -13,7 +13,7 @@ export async function executeFFmpegCommand(
   command: string,
   handlers: FFmpegCommandHandlers,
 ): Promise<void> {
-  const ffmpegPath = store.get("ffmpegPath") as string;
+  const ffmpegPath = store.getFFmpegPath();
   if (!ffmpegPath) {
     handlers.handleError({
       id: "-1",
@@ -32,7 +32,7 @@ export async function executeFFmpegCommand(
     invalidFFmpegError(ffmpegPath);
   }
 
-  const ffmpegCommand = `${store.get("ffmpegPath")} ${command}`;
+  const ffmpegCommand = `${ffmpegPath} ${command}`;
 
   const ffmpeg = exec(ffmpegCommand);
 
@@ -74,7 +74,7 @@ export async function executeFFmpegCommand(
   let inCodecData = false;
   let codecData = "";
   // FFmpeg reports process on stderr 🤷🏽‍♀️
-  ffmpeg.stderr!.on("data", (data) => {
+  ffmpeg.stderr?.on("data", (data) => {
     // raw data, always pushed
     handlers.handleData(data);
 
@@ -95,13 +95,7 @@ export async function executeFFmpegCommand(
 
     // progress
     if (data.includes("frame=")) {
-      const progress = data
-        .split(new RegExp(`\r\n|\r|\n`))
-        .reduce(
-          (prog: object, line: string) => ({ ...prog, ...parseProgress(line) }),
-          {},
-        );
-      handlers.handleProgress({ id, ...progress });
+      handlers.handleProgress({ id, progress: parseProgress(data) });
     }
   });
 }

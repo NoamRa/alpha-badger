@@ -13,7 +13,7 @@ import { FilesView } from "./components/FilesView";
 import { Button } from "@blueprintjs/core";
 
 export function GifMaker(): JSX.Element {
-  const { filesMeta, loading, openFilePickerDialog, updateField, clearFiles } =
+  const { filesMeta, loading, openFilesPickerDialog, updateField, clearFiles } =
     useMetadata();
 
   const {
@@ -53,7 +53,7 @@ export function GifMaker(): JSX.Element {
       <FilesView
         filesMeta={filesMeta}
         loading={loading}
-        selectFiles={openFilePickerDialog}
+        selectFiles={openFilesPickerDialog}
         updateField={updateField}
         clearFilesList={clearFiles}
       />

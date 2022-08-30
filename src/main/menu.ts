@@ -80,8 +80,8 @@ export function setAppMenu(): void {
           const ffmpegPath = await promptFFmpegPath();
           if (ffmpegPath) {
             console.log(ffmpegPath);
-            store.set("ffmpegPath", ffmpegPath);
-            console.log("set ffmpegPath at", store.get("ffmpegPath"));
+            store.setFFmpegPath(ffmpegPath);
+            console.log("set ffmpegPath at", store.getFFmpegPath());
           }
         },
       },
@@ -91,8 +91,8 @@ export function setAppMenu(): void {
           const ffprobePath = await promptFFprobePath();
           if (ffprobePath) {
             console.log(ffprobePath);
-            store.set("ffprobePath", ffprobePath);
-            console.log("set ffprobePath at", store.get("ffprobePath"));
+            store.setFFprobePath(ffprobePath);
+            console.log("set ffprobePath at", store.getFFprobePath());
           }
         },
       },

@@ -6,7 +6,7 @@ import { FileView } from "./FileView";
 type FilesPickerProps = {
   filesMeta: UseMetadata["filesMeta"];
   loading: UseMetadata["loading"];
-  selectFiles: UseMetadata["openFilePickerDialog"];
+  selectFiles: UseMetadata["openFilesPickerDialog"];
   updateField: UseMetadata["updateField"];
   clearFilesList: UseMetadata["clearFiles"];
 };

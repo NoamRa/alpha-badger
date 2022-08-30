@@ -10,13 +10,11 @@ export function useProgress(): UseProgress {
   const [progress, setProgress] = useState({});
 
   useEffect(() => {
-    const progressId = alphaBadgerApi.onProgress((progress) => {
-      if (progress) {
-        const { id, ...prog } = progress;
-        console.log(`got progress for id: ${id}`);
-        console.log(prog);
-        setProgress(prog);
-      }
+    const progressId = alphaBadgerApi.onProgress((progressData) => {
+      const { id, progress } = progressData;
+      console.log(`got progress for id: ${id}`);
+      console.log(progress);
+      setProgress(progress);
     });
 
     return () => {

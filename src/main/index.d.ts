@@ -5,3 +5,5 @@ declare type FFmpegId = string;
 declare type WithFFmpegId<T extends Record<string, any>> = T & {
   id: FFmpegId;
 };
+
+declare type FFprobeJSON = import("./ffmpeg/types").FFprobeJSON;

@@ -46,7 +46,13 @@ export function processManager(): ProcessManager {
   };
 
   const get = (id: FFmpegId): FFmpegProcess => {
-    return _ffmpegProcesses.get(id)!;
+    const proc = _ffmpegProcesses.get(id);
+    if (proc === undefined) {
+      throw new Error(
+        `FFmpeg process manager failed to find process with id ${id}`,
+      );
+    }
+    return proc;
   };
 
   const remove = (id: FFmpegId): void => {
