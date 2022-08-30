@@ -1,7 +1,7 @@
 {
   "name": "alpha-badger",
   "productName": "alpha-badger",
-  "version": "0.1.3",
+  "version": "0.2.0",
   "description": "Alpha Badger",
   "main": ".webpack/main",
   "scripts": {
