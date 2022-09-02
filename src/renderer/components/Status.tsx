@@ -21,8 +21,8 @@ type StatusProps = {
   progress?: UseProgress["progress"];
 };
 
-export function Status({ status, progress }: StatusProps) {
-  const progressEntries = Object.entries(progress ?? {});
+export function Status({ status, progress = {} }: StatusProps) {
+  const progressEntries = Object.entries(progress);
 
   return (
     <section id="status">
