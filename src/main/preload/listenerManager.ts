@@ -2,7 +2,9 @@ import { ipcRenderer } from "electron";
 import { genShortId } from "../utils/generateId";
 
 export type ListenerId = string;
-export type Listener<T> = (payload: WithFFmpegId<T>) => void;
+export type Listener<T extends Record<string, unknown>> = (
+  payload: WithFFmpegId<T>,
+) => void;
 type ChannelAndListener = {
   channel: string;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -11,7 +13,7 @@ type ChannelAndListener = {
 
 const listeners: Map<ListenerId, ChannelAndListener> = new Map();
 
-export function addListener<T>(
+export function addListener<T extends Record<string, unknown>>(
   channel: string,
   listener: Listener<T>,
 ): ListenerId {
