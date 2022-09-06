@@ -5,3 +5,4 @@ export * from "./useFilesPicker";
 export * from "./useFolderPicker";
 export * from "./useProgress";
 export * from "./useToggle";
+export * from "./useStorage";
