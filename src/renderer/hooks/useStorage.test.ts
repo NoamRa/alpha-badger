@@ -25,12 +25,17 @@ describe("Test useStorage", () => {
     jest.clearAllMocks();
   });
   [
-    { storage: localStorage, hook: useLocalStorageItem },
     {
+      name: "use local storage",
+      storage: localStorage,
+      hook: useLocalStorageItem,
+    },
+    {
+      name: "use session storage",
       storage: sessionStorage,
       hook: useSessionStorageItem,
     },
-  ].forEach(({ storage, hook }) => {
+  ].forEach(({ name, storage, hook }) => {
     describe(`Test ${hook.name}`, () => {
       it(`${name} - should pass sanity`, () => {
         expect(storage.getItem(myKey)).toBe(null);
