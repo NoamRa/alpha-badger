@@ -1,5 +1,6 @@
 import { CompareVideos } from "./CompareVideos/CompareVideos";
 import { GifMaker } from "./GifMaker/GifMaker";
+import { Raw } from "./Raw/Raw";
 
 type Preset = {
   name: string;
@@ -20,6 +21,11 @@ export const presets: Presets = Object.freeze([
     name: "Compare Videos",
     description: "Compare two video files and see differences visually",
   },
+  {
+    component: Raw,
+    name: "Raw",
+    description: "Write custom FFmpeg command and let Alpha Badger run it"
+  }
 ]);
 
 export const presetOptions = Object.freeze(
