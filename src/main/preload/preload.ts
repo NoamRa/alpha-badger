@@ -6,6 +6,7 @@ import { contextBridge, ipcRenderer } from "electron";
 
 import type {
   FFmpegCodecData,
+  FFmpegData,
   FFmpegEnd,
   FFmpegError,
   FFmpegProgress,
@@ -29,7 +30,7 @@ const onEnd = (listener: Listener<FFmpegEnd>): ListenerId =>
 const onProgress = (listener: Listener<FFmpegProgress>): ListenerId =>
   addListener(Channel.FFmpeg.Progress, listener);
 
-const onData = (listener: Listener<FFmpegError>): ListenerId =>
+const onData = (listener: Listener<FFmpegData>): ListenerId =>
   addListener(Channel.FFmpeg.Data, listener);
 
 const onCodecData = (listener: Listener<FFmpegCodecData>): ListenerId =>
