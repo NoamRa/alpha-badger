@@ -34,6 +34,8 @@ const mockedStore: typeof store = (() => {
 
 const mockedAlphaBadgerAPI: typeof alphaBadgerApi = {
   path,
+  openExternal: jest.fn(),
+
   chooseFile: jest.fn(),
   chooseFiles: jest.fn(),
   chooseFolder: jest.fn(),

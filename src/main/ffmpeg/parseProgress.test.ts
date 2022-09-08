@@ -7,7 +7,7 @@ describe("Test parseProgress", () => {
 
       time=01:23:45.67      last=one
     `;
-    expect(parseProgress(example)).toEqual({
+    expect(parseProgress(example)).toStrictEqual({
       foo: "BAR",
       fps: 2,
       number: 5,

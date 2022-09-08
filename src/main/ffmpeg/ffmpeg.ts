@@ -60,12 +60,11 @@ export async function executeFFmpegCommand(
     procManager.setReason(id, Reason.Error);
   });
 
-  ffmpeg.on("exit", (status: number | null, signal: "SIGTERM" | null) => {
+  ffmpeg.on("exit", (status: number | null) => {
+    procManager.setStatus(id, Status.Stopped);
     if (status === 0) {
-      procManager.setStatus(id, Status.Stopped);
       procManager.setReason(id, Reason.Done);
-    } else if (signal === "SIGTERM") {
-      procManager.setStatus(id, Status.Stopped);
+    } else {
       procManager.setReason(id, Reason.Error);
     }
     handlers.handleEnd({ id, reason: procManager.get(id).reason });
@@ -73,29 +72,42 @@ export async function executeFFmpegCommand(
 
   let inCodecData = false;
   let codecData = "";
-  // FFmpeg reports process on stderr 🤷🏽‍♀️
-  ffmpeg.stderr?.on("data", (data) => {
-    // raw data, always pushed
-    handlers.handleData(data);
+  // FFmpeg reports process and progress on stderr 🤷🏽‍♀️
+  ffmpeg.stderr?.on("data", (rawData: string) => {
+    const data = rawData.trim();
+    if (data) {
+      handlers.handleData({ id, data });
 
-    // accumulate and handle codec data
-    // TODO see https://github.com/fluent-ffmpeg/node-fluent-ffmpeg/blob/68d5c948b689b3058e52435e0bc3d4af0eee349e/lib/utils.js#L275
-    // start accumulating
-    if (data.includes("Input #")) {
-      inCodecData = true;
-    }
-    // stop
-    if (data.includes("Press [")) {
-      inCodecData = false;
-      handlers.handleCodecData({ id, codecData });
-    }
-    if (inCodecData) {
-      codecData += data;
-    }
+      // #region handle codec data
+      // TODO see https://github.com/fluent-ffmpeg/node-fluent-ffmpeg/blob/68d5c948b689b3058e52435e0bc3d4af0eee349e/lib/utils.js#L275
+      // start accumulating
+      if (data.includes("Input #")) {
+        inCodecData = true;
+      }
+      // stop
+      if (data.includes("Press [")) {
+        inCodecData = false;
+        handlers.handleCodecData({ id, codecData });
+      }
+      // accumulate
+      if (inCodecData) {
+        codecData += data;
+      }
+      // #endregion
 
-    // progress
-    if (data.includes("frame=")) {
-      handlers.handleProgress({ id, progress: parseProgress(data) });
+      // progress
+      if (data.includes("frame=")) {
+        handlers.handleProgress({ id, progress: parseProgress(data) });
+      }
+    }
+  });
+
+  // When invoking non processing commands like "ffmpeg -version",
+  // data is piped through stdout
+  ffmpeg.stdout?.on("data", (rawData: string) => {
+    const data = rawData.trim();
+    if (data) {
+      handlers.handleData({ id, data });
     }
   });
 }

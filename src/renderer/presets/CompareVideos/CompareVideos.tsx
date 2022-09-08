@@ -2,6 +2,7 @@ import React from "react";
 import { Button } from "@blueprintjs/core";
 import { FilePicker } from "../../components/FilePicker";
 import { Status } from "../../components/Status";
+import { PresetMain } from "../../components/PresetMain";
 import {
   FFmpegStatus,
   useFolderPicker,
@@ -57,7 +58,7 @@ export function CompareVideos() {
   };
 
   return (
-    <main>
+    <PresetMain>
       <h2>Compare Videos</h2>
       <section id="baseline-target-select">
         <h5>Step 1 - Choose video files to compare</h5>
@@ -109,6 +110,6 @@ export function CompareVideos() {
         )}
         <Status status={status} />
       </section>
-    </main>
+    </PresetMain>
   );
 }

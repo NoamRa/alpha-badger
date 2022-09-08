@@ -1,4 +1,5 @@
 import React from "react";
+import { Button } from "@blueprintjs/core";
 import {
   useFolderPicker,
   useCodecData,
@@ -10,7 +11,7 @@ import { useMetadata } from "./hooks/useMetadata";
 import { calcDestPath, renderFiles } from "./logic/renderFiles";
 import { Status } from "../../components/Status";
 import { FilesView } from "./components/FilesView";
-import { Button } from "@blueprintjs/core";
+import { PresetMain } from "../../components/PresetMain";
 
 export function GifMaker(): JSX.Element {
   const { filesMeta, loading, openFilesPickerDialog, updateField, clearFiles } =
@@ -48,7 +49,7 @@ export function GifMaker(): JSX.Element {
   };
 
   return (
-    <main>
+    <PresetMain>
       <h2>Video to gif maker</h2>
       <FilesView
         filesMeta={filesMeta}
@@ -98,6 +99,6 @@ export function GifMaker(): JSX.Element {
         )}
         <Status status={status} />
       </section>
-    </main>
+    </PresetMain>
   );
 }
