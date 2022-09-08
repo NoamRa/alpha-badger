@@ -3,6 +3,7 @@ import { Button, TextArea } from "@blueprintjs/core";
 import {
   FFmpegStatus,
   useCodecData,
+  useData,
   useFFmpegStatus,
   useProgress,
   useSessionStorageItem,
@@ -15,9 +16,13 @@ export function Raw() {
     "raw-command",
     "",
   );
+
+  const cleanedCommand = cleanCommand(command);
+
   const { status } = useFFmpegStatus();
   useProgress(); // subscribe to progress events
   useCodecData(); // subscribe to codec data events
+  useData(); // subscribe to data events
 
   const handleChange = (evt: React.ChangeEvent<HTMLTextAreaElement>) => {
     setCommand(evt.target.value);
@@ -26,11 +31,11 @@ export function Raw() {
   const handleRender = () => {
     if (status === FFmpegStatus.Working) {
       alert(
-        "There's conversion in progress. Please wait for process to finish or stop the process",
+        "There's conversion in progress. Please wait for it to finish or stop the process",
       );
       return;
     }
-    alphaBadgerApi.runFFmpegCommand(cleanCommand(command));
+    alphaBadgerApi.runFFmpegCommand(cleanedCommand);
   };
 
   return (
@@ -42,12 +47,7 @@ export function Raw() {
           Run FFmpeg command
         </Button>
         {status === FFmpegStatus.Working && (
-          <Button
-            id="stop"
-            onClick={() => {
-              alphaBadgerApi.stopAll();
-            }}
-          >
+          <Button id="stop" onClick={alphaBadgerApi.stopAll}>
             Stop
           </Button>
         )}
@@ -67,17 +67,17 @@ export function Raw() {
       <p>
         The end command is:
         <br />
-        <b>ffmpeg {cleanCommand(command)}</b>
+        <b>ffmpeg {cleanedCommand}</b>
       </p>
 
       <h5>Some pointers</h5>
       <ul>
         <li>Use absolutes paths</li>
         <li>
-          FFmpeg exe is prepended to the command so you don't need to write
-          it
+          FFmpeg exe is prepended to the command so you don't need to write it
         </li>
         <li>New lines are removed</li>
+        <li>{"To see logging, go to View > Toggle Developer Tools"}</li>
       </ul>
     </PresetMain>
   );

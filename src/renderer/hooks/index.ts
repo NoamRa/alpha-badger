@@ -1,4 +1,5 @@
 export * from "./useCodecData";
+export * from "./useData";
 export * from "./useFFmpegStatus";
 export * from "./useFilePicker";
 export * from "./useFilesPicker";
