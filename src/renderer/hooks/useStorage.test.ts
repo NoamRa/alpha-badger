@@ -101,7 +101,7 @@ describe("Test useStorage", () => {
 
       it(`${name} - should read value from storage when init (hydrate)`, () => {
         storage.setItem(myKey, JSON.stringify("bla"));
-        const { result } = renderHook(() => hook<number>(myKey));
+        const { result } = renderHook(() => hook<number>(myKey, undefined));
 
         const [value1] = result.current;
         expect(value1).toBe("bla");

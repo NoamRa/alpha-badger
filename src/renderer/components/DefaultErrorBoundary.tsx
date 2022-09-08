@@ -31,7 +31,13 @@ export class DefaultErrorBoundary extends Component<
           <h1>Something went wrong 😿</h1>
           <p>
             Please let me know what{" "}
-            <a href="mailto:noamraby@gmail.com">noamraby@gmail.com</a>
+            <a
+              onClick={() =>
+                alphaBadgerApi.openExternal("mailto:noamraby@gmail.com")
+              }
+            >
+              noamraby@gmail.com
+            </a>
           </p>
         </div>
       );

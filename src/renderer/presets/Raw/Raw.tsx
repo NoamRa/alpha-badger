@@ -77,6 +77,16 @@ export function Raw() {
           FFmpeg exe is prepended to the command so you don't need to write it
         </li>
         <li>New lines are removed</li>
+        <li>
+          <a
+            onClick={() => {
+              alphaBadgerApi.openExternal("https://alfg.dev/ffmpeg-commander/");
+            }}
+          >
+            FFmpeg Commander
+          </a>
+          {" is a great tool to compose commands"}
+        </li>
         <li>{"To see logging, go to View > Toggle Developer Tools"}</li>
       </ul>
     </PresetMain>

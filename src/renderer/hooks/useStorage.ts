@@ -6,9 +6,7 @@ type StorageType = "session" | "local";
 
 type UseStorageItem<T> = [T, (value: T) => void];
 
-function useStorageItemGenerator<T extends ThingsThatAreNotFunctions>(
-  storageType: StorageType = "session",
-) {
+function StorageItemHookGenerator(storageType: StorageType) {
   // based on useHooks' useSessionStorage:
   // https://usehooks-ts.com/react-hook/use-session-storage
   if (!window || !window[`${storageType}Storage`]) {
@@ -17,9 +15,12 @@ function useStorageItemGenerator<T extends ThingsThatAreNotFunctions>(
 
   return function useStorageItem<T extends ThingsThatAreNotFunctions>(
     key: string,
-    initialValue?: T | (() => T),
+    initialValue: T | (() => T) | undefined,
   ): UseStorageItem<T> {
-    const resolvedInitialValue: T = useMemo(() => resolveValue(initialValue), []);
+    const resolvedInitialValue: T | undefined = useMemo(
+      () => resolveValue(initialValue),
+      [],
+    );
 
     const readValue = valueReader(key, storageType, resolvedInitialValue);
 
@@ -50,8 +51,8 @@ function useStorageItemGenerator<T extends ThingsThatAreNotFunctions>(
   };
 }
 
-export const useSessionStorageItem = useStorageItemGenerator("session");
-export const useLocalStorageItem = useStorageItemGenerator("local");
+export const useSessionStorageItem = StorageItemHookGenerator("session");
+export const useLocalStorageItem = StorageItemHookGenerator("local");
 
 function parseJSON<T>(value: string | null): T | undefined {
   try {
@@ -62,26 +63,26 @@ function parseJSON<T>(value: string | null): T | undefined {
   }
 }
 
-function resolveValue(value?: Function | ThingsThatAreNotFunctions) {
+function resolveValue<T>(value: T | (() => T)): T {
   return value instanceof Function ? value() : value;
 }
 
 function valueReader<T>(
   key: string,
   storageType: StorageType,
-  fallbackValue: T,
+  fallbackValue: T | undefined,
 ) {
   return function readValue(): T {
     try {
       const item = window[`${storageType}Storage`].getItem(key);
 
-      return item ? (parseJSON(item) as T) : fallbackValue;
+      return (item ? (parseJSON(item) as T) : fallbackValue) as T;
     } catch (error) {
       console.warn(
         `Error reading '${storageType}Storage' key “${key}”:`,
         error,
       );
-      return fallbackValue;
+      return fallbackValue as T;
     }
   };
 }

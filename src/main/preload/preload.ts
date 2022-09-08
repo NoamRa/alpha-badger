@@ -2,7 +2,7 @@
  * This file serves as API between main process and renderers.
  */
 import path from "node:path";
-import { contextBridge, ipcRenderer } from "electron";
+import { contextBridge, ipcRenderer, shell } from "electron";
 
 import type {
   FFmpegCodecData,
@@ -66,9 +66,24 @@ const invokeChooseFolder = (): Promise<string | undefined> => {
   return ipcRenderer.invoke(Channel.ChooseFolder);
 };
 
+const openExternal = (url: string) => {
+  // intentionally very restrictive use of openExternal
+  const allowedProtocols = new Set(["https:", "mailto:"]);
+  if (allowedProtocols.has(new URL(url).protocol)) {
+    shell.openExternal(url);
+  } else {
+    console.log(
+      `Opening external app was blocked due to disallowed protocol. The allowed protocols are ${[
+        ...allowedProtocols,
+      ].join(", ")}`,
+    );
+  }
+};
+
 export const alphaBadgerApi = {
-  // path utils
+  // utils
   path: path,
+  openExternal,
 
   // file and related
   chooseFile: invokeChooseFile,

@@ -24,8 +24,8 @@ export const presets: Presets = Object.freeze([
   {
     component: Raw,
     name: "Raw",
-    description: "Write custom FFmpeg command and let Alpha Badger run it"
-  }
+    description: "Write custom FFmpeg command and let Alpha Badger run it",
+  },
 ]);
 
 export const presetOptions = Object.freeze(

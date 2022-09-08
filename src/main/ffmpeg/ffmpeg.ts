@@ -60,7 +60,7 @@ export async function executeFFmpegCommand(
     procManager.setReason(id, Reason.Error);
   });
 
-  ffmpeg.on("exit", (status: number | null, signal: "SIGTERM" | null) => {
+  ffmpeg.on("exit", (status: number | null) => {
     procManager.setStatus(id, Status.Stopped);
     if (status === 0) {
       procManager.setReason(id, Reason.Done);
