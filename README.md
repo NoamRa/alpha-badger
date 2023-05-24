@@ -25,7 +25,7 @@ Future presets:
 
 ## How can I use it?
 
-1. Have Alpha-Badger🦡 running on your machine by either
+1. Have Alpha-Badger🦡 running on your machine by _either_
 
    - Download [Alpha-Badger🦡 from "release" page](https://github.com/NoamRa/alpha-badger/releases) and install. There may be OS prompt about unsigned application
    - Checkout the repo and run locally
@@ -33,6 +33,7 @@ Future presets:
 2. Set FFmpeg and FFprobe. Alpha-Badger🦡 does not come with FFmpeg and FFprobe binaries
 
    - Download the relevant executables from [FFmpeg.org](https://ffmpeg.org/download.html)
+     - **macOS** users will have to allow Alpha-Badger🦡, ffmpeg, and ffplay by opening each app separatly and allowing it in Prefrences > Privacy & Security.
    - Set the path fo FFmpeg and FFprobe in the Alpha Badger menu ![set paths](docs/assets/set_paths_menu.png)
 
 Please note that Alpha-Badger🦡 is not auto updating yet. You can check the version in the help menu.
